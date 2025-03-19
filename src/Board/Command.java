@@ -2,5 +2,6 @@ package Board;
 
 public interface Command {
     void execute();
-    void undo();
+
+    void undo(Players.Player player);
 }

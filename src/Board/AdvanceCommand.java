@@ -1,23 +1,24 @@
 package Board;
 
 public class AdvanceCommand implements Command{
+
     private final GameBoard board;
-    private final int advance;
     private int previousPosition;
 
-    public AdvanceCommand(GameBoard board, int advance) {
+
+    public AdvanceCommand(GameBoard board) {
         this.board = board;
-        this.advance = advance;
     }
 
     @Override
     public void execute() {
-        previousPosition = board.getCurrentPosition();
-        board.advance(advance);
+        board.advance();
+
     }
 
     @Override
-    public void undo() {
-        board.setPosition(previousPosition);
+    public void undo(Players.Player player) {
+        previousPosition = board.getCurrentPosition(player);
+        board.setPlayerPosition(player, previousPosition);
     }
 }

@@ -1,8 +1,9 @@
 package Board;
 
 public interface GameBoard {
-    int getCurrentPosition();
-    void setPosition(int newPosition);
-    void advance(int count);
+    int getCurrentPosition(Players.Player player);
+    void setPlayerPosition(Players.Player player, int newPosition);
+    void advance();
+    boolean isGameWon();
 
 }

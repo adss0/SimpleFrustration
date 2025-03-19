@@ -1,9 +1,11 @@
 package Board;
 
+import Players.Player;
+
 public final class HomeEvent extends PositionChangeEvent {
 
-    HomeEvent(int advance, int originalPosition, int newPosition) {
-        super(advance, originalPosition, newPosition);
+    HomeEvent(Player player, int play, int advance, int oldPosition, int newPosition, int totalPlayers) {
+        super(player, play, advance, oldPosition, newPosition, totalPlayers);
     }
 
     public String toString() {

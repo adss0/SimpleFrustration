@@ -1,9 +1,9 @@
 package Board;
 
 public final class UnderflowEvent extends PositionChangeEvent {
-    UnderflowEvent(int advance, int oldPosition, int newPosition) {
+    UnderflowEvent(Players.Player player, int play, int advance, int oldPosition, int newPosition) {
 
-        super(advance, oldPosition, newPosition);
+        super(player, play, advance, oldPosition, newPosition);
     }
 
     @Override

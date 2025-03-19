@@ -1,40 +1,34 @@
-
-import java.util.Stack;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        show(new Dice.RandomDoubleDiceShakerFactory());
+//        Scanner scanner = new Scanner(System.in);
+//
+//        System.out.println("Welcome to the Simple Frustration");
+//        System.out.println("How many dices do you want to play with?Enter 1 or 2?");
+//        int numberOfDice = scanner.nextInt();
+//        while(numberOfDice > 2){
+//            System.out.println("Please enter a number between 1 or 2");
+//            numberOfDice = scanner.nextInt();
+//        }
+//        System.out.println("Select number of players 2 or 4");
+//        int numberOfPlayers= scanner.nextInt();
+//        while( numberOfPlayers != 4  && numberOfPlayers !=2 ){
+//            System.out.println("Only 2 or 4 players can play.Please enter the correct number.");
+//            numberOfPlayers =scanner.nextInt();
+//        }
+//
+//        System.out.println("Select Board size of 18 or 36");
+//        int boardSize = scanner.nextInt();
+//        while(!(boardSize > 1)  ){
+//            System.out.println("Board size can only be 18 or 36. Please enter the correct number.");
+//            boardSize = scanner.nextInt();
+//        }
 
-        Board.ObservedGameBoard game = new Board.ObservedGameBoard(1, 18);
-        Board.GameBoardObserver observer = new Board.Observable();
-        game.add(observer);
-        play(game, new Dice.RandomDoubleDiceShakerFactory());
-        game.detach(observer);
 
+       FacadeInterface game = new Facade();
+
+       game.play(2, 2, 18, true, true);
     }
-    private static void show(Dice.DiceShakerFactory factory){
-        Dice.DiceShaker shaker= factory.create();
-       System.out.format( "Shake %s%n", shaker.shake());
 
-    }
-    private static void play(Board.GameBoard game, Dice.DiceShakerFactory factory)
-    {
-        Dice.DiceShaker shaker= factory.create();
-        Stack<Board.AdvanceCommand> commands = new Stack<>();
-        int shak = shaker.shake();
-        System.out.println(shak);
-        commands.push(new Board.AdvanceCommand(game,shak));
-        commands.push(new Board.AdvanceCommand(game,shak));
-        commands.push(new Board.AdvanceCommand(game,shak));
-
-        for(Board.Command command: commands)
-        {
-            command.execute();
-        }
-        //undo
-        while(!commands.empty())
-        {
-            commands.pop().undo();
-        }
-    }
 }

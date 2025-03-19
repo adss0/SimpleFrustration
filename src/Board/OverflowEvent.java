@@ -1,8 +1,8 @@
 package Board;
 
 public final class OverflowEvent extends PositionChangeEvent {
-    OverflowEvent(int advance,int oldPosition, int newPosition) {
-        super(advance, oldPosition, newPosition);
+    OverflowEvent(Players.Player player, int play, int advance, int oldPosition, int newPosition) {
+        super(player, play, advance, oldPosition, newPosition);
     }
 
     @Override
