@@ -1,4 +1,4 @@
-package Board;
+package Events;
 
 public final class UnderflowEvent extends PositionChangeEvent {
     UnderflowEvent(Players.Player player, int play, int advance, int oldPosition, int newPosition) {

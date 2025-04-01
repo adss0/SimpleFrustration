@@ -1,7 +1,7 @@
 package Dice;
 
 public class FixedDiceShaker implements DiceShaker{
-    private static final int [] fixedDiceRoll = {10, 1, 2, 1, 2};
+    private static final int [] fixedDiceRoll = {13, 4, 4, 5, 2};
     private static int rollIndex= 0 ;
 
 

@@ -1,4 +1,4 @@
-package Board;
+package Events;
 
 public interface GameBoardObserver {
     void onEvent(OverflowEvent overflowEvent);
@@ -6,5 +6,4 @@ public interface GameBoardObserver {
     void onEvent(HomeEvent homeEvent);
     void onEvent(BounceEvent onBounceEvent);
     void onEvent(HitEvent onHitEvent);
-
 }

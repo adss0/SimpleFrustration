@@ -1,4 +1,4 @@
-package Board;
+package Events;
 
 public class HitEvent extends PositionChangeEvent {
     HitEvent(Players.Player player, int play, int advance, int oldPosition, int newPosition) {

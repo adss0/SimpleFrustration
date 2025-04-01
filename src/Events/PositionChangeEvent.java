@@ -1,5 +1,7 @@
-package Board;
+package Events;
 
+
+import Players.Player;
 
 public abstract class PositionChangeEvent {
     private final int oldPosition;
@@ -7,10 +9,9 @@ public abstract class PositionChangeEvent {
     private int advance;
     private int moves;
     private int totalMoves;
-    public  Players.Player player;
-    private String Info ;
+    private Players.Player player;
 
-
+    // Constructor for Underflow, Overflow, Hit and Bounce Events
     PositionChangeEvent(Players.Player player, int moves, int advance, int oldPosition, int newPosition) {
         this.player = player;
         this.advance = advance;
@@ -19,6 +20,7 @@ public abstract class PositionChangeEvent {
         this.newPosition = newPosition;
     }
 
+    // Constructor for HomeEvent
     PositionChangeEvent(Players.Player player, int moves, int advance, int oldPosition, int newPosition, int totalMoves) {
         this.player = player;
         this.advance = advance;
@@ -28,25 +30,20 @@ public abstract class PositionChangeEvent {
         this.totalMoves = totalMoves;
     }
 
-    public int oldPosition() {
-        return oldPosition;
+    public int getOldPosition() {return oldPosition;}
+    public int getNewPosition() {return newPosition;}
+    public int getAdvance() {
+        return advance;
     }
-
     public int getMoves() {
         return moves;
     }
     public int getTotalMoves() {
         return totalMoves;
     }
-    public int newPosition() {
-        return newPosition;
-    }
-    public int getAdvance() {
-        return advance;
-    }
-    public void setPlayer(Players.Player player) {
-        this.player = player;
-    }
+
+    public Player getPlayer() {return player;}
+
     public String checkForTailPosition(Players.Player player){
 //            if(player.getTailPositions().contains(newPosition)){
 //                return "TAIL ";
@@ -63,7 +60,7 @@ public abstract class PositionChangeEvent {
 
     @Override
     public String toString() {
-        String rollInfo = String.format("{%s play %d rolls %d} ", player, moves, advance);
+        String rollInfo = String.format("{%s play %d rolls %d} %n", player, moves, advance);
         String tailInfo = checkForTailPosition(player);
         String homeInfo= checkForHomePostion(player);
 

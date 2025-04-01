@@ -1,6 +1,5 @@
-public interface FacadeInterface {
+public interface IFacade {
     void play(int numberOfDice, int numberOfPlayers, int boardSize, boolean disableHitEvent, boolean disableBounceEvent);
-    void undo(Players.Player player);
 
 
 }

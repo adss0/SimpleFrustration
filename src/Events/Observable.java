@@ -1,4 +1,4 @@
-package Board;
+package Events;
 
 public class Observable implements GameBoardObserver {
 
@@ -14,11 +14,9 @@ public class Observable implements GameBoardObserver {
 
     @Override
     public void onEvent(HomeEvent homeEvent) {
-        int moves = homeEvent.getMoves();
-        int totalMoves = homeEvent.getTotalMoves();
         System.out.format("%s%n", homeEvent);
-        System.out.format("%s wins in %d moves%n", homeEvent.player, moves);
-        System.out.format("Total plays %d", totalMoves);
+        System.out.format("%s wins in %d moves%n", homeEvent.getPlayer(), homeEvent.getMoves());
+        System.out.format("Total plays %d", homeEvent.getTotalMoves());
     }
 
     @Override

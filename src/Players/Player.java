@@ -1,42 +1,36 @@
 package Players;
 
-import java.util.*;
+public class Player implements IPlayer {
 
-public class Player {
-
-    Colors color;
+    private Colors color;
     private int HOME;
     private int tailDiversion;
 
-
-    public Player(Colors color ) {
+    public Player(Colors color, int HOME, int tailDiversion ) {
         this.color=color;
-//        this.HOME= HOME;
-//        this.tailDiversion = tailDiversion;
-
-
-    }
-    public void setHOME(int HOME) {
-        this.HOME = HOME;
-    }
-    public void setTailDiversion(int tailDiversion) {
+        this.HOME= HOME;
         this.tailDiversion = tailDiversion;
     }
 
-
-    public int getHome(){
-        return HOME;
-    }
-
-    public Colors getColor() {
-        return color;
-    }
+    @Override
     public int getHOME() {
         return HOME;
     }
-
+    @Override
+    public void setHOME(int HOME) {
+        this.HOME = HOME;
+    }
+    @Override
     public int getTailDiversion() {
         return tailDiversion;
+    }
+    @Override
+    public void setTailDiversion(int tailDiversion) {
+        this.tailDiversion = tailDiversion;
+    }
+    @Override
+    public Colors getColor() {
+        return color;
     }
 
 
