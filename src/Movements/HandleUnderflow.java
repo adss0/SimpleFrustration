@@ -1,30 +1,34 @@
 package Movements;
 
 import Events.EventManager;
-import Players.IPlayerManager;
+
+import Players.PlayerManager;
 
 public class HandleUnderflow implements IMovementHandler {
-    private final IPlayerManager playerManager;
-    private final ICollisionDetector collisionDetector;
+    private final PlayerManager playerManager;
+    private final IMovementHandler collisionDetector;
     private final EventManager eventManager;
-    private final boolean disableHitEvent;
 
-    public HandleUnderflow(IPlayerManager playerManager,
-                                        ICollisionDetector collisionDetector,
-                                        EventManager eventManager,
-                                        boolean disableHitEvent) {
+    public HandleUnderflow(PlayerManager playerManager,
+                           IMovementHandler collisionDetector,
+                                        EventManager eventManager) {
         this.playerManager = playerManager;
         this.collisionDetector = collisionDetector;
         this.eventManager = eventManager;
-        this.disableHitEvent = disableHitEvent;
     }
 
     @Override
     public void movementHandler(Players.Player player, int advance, int originalIndex, int newIndex, int moves) {
+//
+//        if (!disableHitEvent && collisionDetector.movementHandler(player, advance, originalIndex, newIndex, moves)) {
+//            return;
+//        }
+        collisionDetector.movementHandler(player, advance, originalIndex, newIndex, moves);
 
-        if (!disableHitEvent && collisionDetector.movementHandler(player, advance, originalIndex, newIndex, moves)) {
+        if (player.isWasCollision()) {
             return;
         }
+
         playerManager.setPlayerPosition(player, newIndex);
         eventManager.onUnderflow(player, advance, originalIndex, newIndex, moves);
     }

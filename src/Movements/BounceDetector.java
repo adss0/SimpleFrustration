@@ -1,24 +1,21 @@
 package Movements;
 
-import Players.IPlayerManager;
 import Players.Player;
 import Events.EventManager;
+import Players.PlayerManager;
 
 public class BounceDetector implements IMovementHandler {
 
-        private final IPlayerManager playerManager;
-        private final ICollisionDetector collisionDetector;
+        private final PlayerManager playerManager;
+        private final IMovementHandler collisionDetector;
         private final EventManager eventManager;
-        private final boolean disableHitEvent;
 
-        public BounceDetector(IPlayerManager playerManager,
-                                     ICollisionDetector collisionDetector,
-                                     EventManager eventManager,
-                                     boolean disableHitEvent) {
+        public BounceDetector(PlayerManager playerManager,
+                              IMovementHandler collisionDetector,
+                                     EventManager eventManager) {
             this.playerManager = playerManager;
             this.collisionDetector = collisionDetector;
             this.eventManager = eventManager;
-            this.disableHitEvent = disableHitEvent;
         }
 
         @Override
@@ -29,9 +26,14 @@ public class BounceDetector implements IMovementHandler {
         int newIndex = END - overflowAmount;
         newIndex = Math.max(newIndex, 0);
 
-        if (!disableHitEvent && collisionDetector.movementHandler(player, advance, currentPosition, newIndex, moves)) {
-            return;
-        }
+//        if (!disableHitEvent && collisionDetector.movementHandler(player, advance, currentPosition, newIndex, moves)) {
+//            return;
+//        }
+        collisionDetector.movementHandler(player, advance, currentPosition, newIndex, moves);
+            if (player.isWasCollision()) {
+                return;
+            }
+
        resolveBounce(player, advance, currentPosition, newIndex, moves);
     }
 

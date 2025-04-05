@@ -1,16 +1,14 @@
 package Dice;
 
 public class FixedDiceShaker implements DiceShaker{
-    private static final int [] fixedDiceRoll = {13, 4, 4, 5, 2};
+    private static final int [] fixedDiceRoll = {6, 4, 7, 12, 5};
     private static int rollIndex= 0 ;
 
 
     @Override
     public int shake() {
-        // Return the next roll in the fixedDiceRoll array, then increment the index
         int roll = fixedDiceRoll[rollIndex];
 
-        // You can loop back to the start once all values have been returned
         rollIndex = (rollIndex + 1) % fixedDiceRoll.length;
 
         return roll;

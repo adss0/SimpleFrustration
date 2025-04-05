@@ -1,9 +1,7 @@
 package Board;
 
-import Dice.DiceShaker;
 import Events.EventManager;
 import Movements.*;
-import Players.IPlayerManager;
 import Players.Player;
 import Players.PlayerManager;
 
@@ -14,31 +12,25 @@ public class GameBoard implements IGameBoard {
     private boolean gameWon = false; // Track if someone has won
     public int moves;
     int totalMoves;
-    private int numberOfTailPositions;
-    private int BOARD_SIZE;
-    private boolean disableHitEvent, disableBounceEvent;
+    private final int BOARD_SIZE;
+    private final boolean disableBounceEvent;
 
-    private final DiceShaker shaker;
     private final EventManager eventManager;
-    private final IPlayerManager playerManager;
-    private final ICollisionDetector collisionDetector;
+    private final PlayerManager playerManager;
     private final IMovementHandler bounceDetector;
     private final IMovementHandler handleUnderflow;
     private final IMovementHandler handleOverflow;
 
 
-    public GameBoard(int BOARD_SIZE, List<Player> playerList, DiceShaker shaker, boolean disableHitEvent, boolean disableBounceEvent, PlayerManager playerManager) {
-        this.numberOfTailPositions = (BOARD_SIZE <= 18) ? 3 : 6;
+    public GameBoard(int BOARD_SIZE, boolean disableHitEvent, boolean disableBounceEvent, PlayerManager playerManager) {
         this.BOARD_SIZE = BOARD_SIZE;
-        this.shaker = shaker;
-        this.disableHitEvent = disableHitEvent;
         this.disableBounceEvent = disableBounceEvent;
         this.playerManager = playerManager;
         eventManager = new EventManager();
-        this.collisionDetector = new CollisionDetector(this.playerManager, this.disableHitEvent, this.eventManager );
-        this.bounceDetector = new BounceDetector(this.playerManager, this.collisionDetector, this.eventManager, this.disableHitEvent);
-        this.handleUnderflow = new HandleUnderflow(this.playerManager, this.collisionDetector, this.eventManager, this.disableHitEvent);
-        this.handleOverflow = new HandleOverflow(this.playerManager, this.collisionDetector, this.eventManager,this.disableHitEvent, this.BOARD_SIZE);
+        IMovementHandler collisionDetector = new CollisionDetector(this.playerManager, disableHitEvent, this.eventManager);
+        this.bounceDetector = new BounceDetector(this.playerManager, collisionDetector, this.eventManager);
+        this.handleUnderflow = new HandleUnderflow(this.playerManager, collisionDetector, this.eventManager);
+        this.handleOverflow = new HandleOverflow(this.playerManager, collisionDetector, this.eventManager, this.BOARD_SIZE);
     }
 
 
@@ -52,7 +44,7 @@ public class GameBoard implements IGameBoard {
             playerManager.setOverflowed(player, false);
             playerManager.setPlayerPosition(player, lastValidPosition);
         }
-
+        player.setSpecialCase(false);
         playerManager.setPlayerPosition(player, lastValidPosition);
         this.totalMoves = Math.max( this.totalMoves - 1, 1);
     }
@@ -67,7 +59,7 @@ public class GameBoard implements IGameBoard {
         int currentPosition = playerManager.getPlayerPosition(player);
         int HOME = playerManager.getPlayerHome(player);
         int END = playerManager.getPlayerEnd(player);
-        boolean overflowed = playerManager.hasOverflowed(player) || HOME == 1;
+        boolean overflowed = playerManager.hasOverflowed(player);
         int candidateIndex = currentPosition + advance;
         this.totalMoves++;
 
@@ -100,60 +92,5 @@ public class GameBoard implements IGameBoard {
             e.printStackTrace();
         }
     }
-//
-//    private void underflow(Players.Player player, int advance, int originalIndex, int newIndex, int moves) {
-//
-//        if (!disableHitEvent && collisionDetector.detectCollision(player, advance, originalIndex, newIndex, moves)) {
-//            return;
-//        }
-//        playerManager.setPlayerPosition(player, newIndex);
-//        eventManager.onUnderflow(player, advance, originalIndex, newIndex, moves);
-//    }
-
-//    private void overflow(Players.Player player, int advance, int originalIndex, int candidateIndex, int moves) {
-//
-//        int newIndex = (candidateIndex > BOARD_SIZE) ? (candidateIndex % BOARD_SIZE) : candidateIndex;
-//
-//        if (!disableHitEvent && collisionDetector.detectCollision(player, advance, originalIndex, newIndex, moves)) {
-//            return;
-//        }
-//
-//        playerManager.setOverflowed(player, true);
-//        playerManager.setPlayerPosition(player, newIndex);
-//        eventManager.onOverflow(player, advance, originalIndex, newIndex, moves);
-//
-//    }
-
-//    private void detectBounce(Players.Player player, int advance, int currentPosition, int candidateIndex, int moves) {
-//
-//        int END = playerManager.getPlayerEnd(player);
-//        int overflowAmount = candidateIndex - END;
-//        int newIndex = END - overflowAmount;
-//        newIndex = Math.max(newIndex, 0);
-//
-//        if (!disableHitEvent && collisionDetector.detectCollision(player, advance, currentPosition, newIndex, moves)) {
-//            return;
-//        }
-//        playerManager.setPlayerPosition(player, newIndex);
-//        eventManager.onBounce(player, advance, currentPosition, newIndex, moves);
-//
-//    }
-//
-//    private boolean detectCollision(Players.Player player, int advance, int currentPosition, int candidateIndex, int moves) {
-//        for (Map.Entry<Players.Player, Integer> entry : playerManager.getPlayerPositions().entrySet()) {
-//            Players.Player otherPlayer = entry.getKey();
-//            int otherPosition = entry.getValue();
-//
-//            if (!otherPlayer.equals(player) && otherPosition == candidateIndex && candidateIndex != playerManager.getPlayerHome(otherPlayer)) {
-//                System.out.println("Collision Detected! " + player + " hit " + otherPlayer);
-//                playerManager.setPlayerPosition(otherPlayer, playerManager.getPlayerHome(otherPlayer));
-//                playerManager.setPlayerPosition(player, candidateIndex);
-//                eventManager.onHit(player, advance, currentPosition, candidateIndex, moves);
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
-
     }
 

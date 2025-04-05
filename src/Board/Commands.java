@@ -1,7 +1,6 @@
 package Board;
 
 import Dice.DiceShaker;
-import Players.IPlayerManager;
 import Players.Player;
 import Players.PlayerManager;
 import java.util.Scanner;
@@ -11,7 +10,7 @@ public class Commands implements ICommands {
     private final GameBoard board;
     private final DiceShaker shaker;
     private final Scanner scanner;
-    private final IPlayerManager playerManager;
+    private final PlayerManager playerManager;
 
     private Player currentPlayer;
     private int advance;

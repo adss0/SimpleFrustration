@@ -1,36 +1,45 @@
 package Movements;
 
 import Events.EventManager;
-import Players.IPlayerManager;
+
 import Players.Player;
+import Players.PlayerManager;
 
 public class HandleOverflow implements IMovementHandler {
-    private final IPlayerManager playerManager;
-    private final ICollisionDetector collisionDetector;
+    private final PlayerManager playerManager;
+    private final IMovementHandler collisionDetector;
     private final EventManager eventManager;
-    private final boolean disableHitEvent;
     private final int BOARD_SIZE;
 
-    public HandleOverflow(IPlayerManager playerManager,
-                          ICollisionDetector collisionDetector,
+    public HandleOverflow(PlayerManager playerManager,
+                          IMovementHandler collisionDetector,
                           EventManager eventManager,
-                          boolean disableHitEvent,
                           int BOARD_SIZE) {
         this.playerManager = playerManager;
         this.collisionDetector = collisionDetector;
         this.eventManager = eventManager;
-        this.disableHitEvent = disableHitEvent;
         this.BOARD_SIZE = BOARD_SIZE;
     }
     @Override
     public void movementHandler(Player player, int advance, int originalIndex, int candidateIndex, int moves) {
         int newIndex = (candidateIndex > BOARD_SIZE) ? (candidateIndex % BOARD_SIZE) : candidateIndex;
 
-        if (!disableHitEvent && collisionDetector.movementHandler(player, advance, originalIndex, newIndex, moves)) {
+//        if (!disableHitEvent && collisionDetector.movementHandler(player, advance, originalIndex, newIndex, moves)) {
+//            return;
+//        }
+        collisionDetector.movementHandler(player, advance, originalIndex, newIndex, moves);
+        if (player.isWasCollision()) {
             return;
         }
+
         playerManager.setOverflowed(player, true);
         playerManager.setPlayerPosition(player, newIndex);
+        if(originalIndex == player.getHOME() && newIndex < player.getHOME()){
+            player.setSpecialCase(true);
+        } else{player.setSpecialCase(false);}
+
         eventManager.onOverflow(player, advance, originalIndex, newIndex, moves);
+
+
     }
 }
