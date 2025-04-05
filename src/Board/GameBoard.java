@@ -8,13 +8,12 @@ import Players.PlayerManager;
 public class GameBoard implements IGameBoard {
 
     private boolean gameWon = false; // Track if someone has won
-    public int moves;
-    int totalMoves;
+    public static int moves;
+    public static int totalMoves;
     private final int BOARD_SIZE;
     private final boolean disableBounceEvent;
 
     private final EventManager eventManager;
-    private final PlayerManager playerManager;
     private final IMovementHandler bounceDetector;
     private final IMovementHandler handleUnderflow;
     private final IMovementHandler handleOverflow;
@@ -23,28 +22,11 @@ public class GameBoard implements IGameBoard {
     public GameBoard(int BOARD_SIZE, boolean disableHitEvent, boolean disableBounceEvent, PlayerManager playerManager) {
         this.BOARD_SIZE = BOARD_SIZE;
         this.disableBounceEvent = disableBounceEvent;
-        this.playerManager = playerManager;
         eventManager = new EventManager();
-        IMovementHandler collisionDetector = new CollisionDetector(this.playerManager, disableHitEvent, this.eventManager);
-        this.bounceDetector = new BounceDetector(this.playerManager, collisionDetector, this.eventManager);
-        this.handleUnderflow = new HandleUnderflow(this.playerManager, collisionDetector, this.eventManager);
-        this.handleOverflow = new HandleOverflow(this.playerManager, collisionDetector, this.eventManager, this.BOARD_SIZE);
-    }
-
-
-    @Override
-    public void undoPlayerPosition(Player player, int advance) {
-        // Get the last valid position
-        int lastValidPosition = playerManager.getLastValidPosition(player);
-
-        // Check if the reverse position is less than 1 (i.e., needs to wrap around)
-        if (playerManager.getPlayerHome(player) !=1 && (lastValidPosition + advance) > BOARD_SIZE  ) {
-            playerManager.setOverflowed(player, false);
-            playerManager.setPlayerPosition(player, lastValidPosition);
-        }
-        player.setSpecialCase(false);
-        playerManager.setPlayerPosition(player, lastValidPosition);
-        this.totalMoves = Math.max( this.totalMoves - 1, 1);
+        IMovementHandler collisionDetector = new CollisionDetector(playerManager, disableHitEvent, this.eventManager);
+        this.bounceDetector = new BounceDetector(collisionDetector, this.eventManager);
+        this.handleUnderflow = new HandleUnderflow(collisionDetector, this.eventManager);
+        this.handleOverflow = new HandleOverflow( collisionDetector, this.eventManager, this.BOARD_SIZE);
     }
 
     @Override
@@ -54,9 +36,9 @@ public class GameBoard implements IGameBoard {
 
     @Override
     public void advancePlayer(Player player, int advance) {
-        int currentPosition = playerManager.getPlayerPosition(player);
-        int END = playerManager.getPlayerEnd(player);
-        boolean overflowed = playerManager.hasOverflowed(player);
+        int currentPosition = player.getPlayerPosition();
+        int END = player.getEND();
+        boolean overflowed = player.isOverflowed();
         int candidateIndex = currentPosition + advance;
         this.totalMoves++;
 
@@ -88,6 +70,20 @@ public class GameBoard implements IGameBoard {
         } catch (IndexOutOfBoundsException e) {
             e.printStackTrace();
         }
+    }
+    @Override
+    public void undoPlayerPosition(Player player, int advance) {
+        // Get the last valid position
+        int lastValidPosition = player.getLastValidPosition();
+
+        // Check if the reverse position is less than 1 (i.e., needs to wrap around)
+        if( player.getHOME()!=1 && (lastValidPosition + advance) > BOARD_SIZE  ) {
+            player.setOverflowed(false);
+            player.setPlayerPosition(lastValidPosition);
+        }
+        player.setSpecialCase(false);
+        player.setPlayerPosition(lastValidPosition);
+        this.totalMoves = Math.max( this.totalMoves - 1, 1);
     }
     }
 

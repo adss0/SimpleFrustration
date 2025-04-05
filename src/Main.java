@@ -1,53 +1,56 @@
 import java.util.Scanner;
 
-public class Main {
-    public static void main(String[] args) {
-//        Scanner scanner = new Scanner(System.in);
-//
-//        System.out.println("Welcome to Simple Frustration");
-//
-//        System.out.println("How many dices do you want to play with? Enter 1 or 2:");
-//        int numberOfDice = scanner.nextInt();
-//        while (numberOfDice < 1 || numberOfDice > 2) {
-//            System.out.println("Please enter a number between 1 or 2:");
-//            numberOfDice = scanner.nextInt();
-//        }
-//
-//        System.out.println("Select number of players (2 or 4):");
-//        int numberOfPlayers = scanner.nextInt();
-//        while (numberOfPlayers != 2 && numberOfPlayers != 4) {
-//            System.out.println("Only 2 or 4 players can play. Please enter the correct number:");
-//            numberOfPlayers = scanner.nextInt();
-//        }
-//
-//        System.out.println("Select Board size (18 or 36):");
-//        int boardSize = scanner.nextInt();
-//        while (boardSize != 18 && boardSize != 36) {
-//            System.out.println("Board size can only be 18 or 36. Please enter the correct number:");
-//            boardSize = scanner.nextInt();
-//        }
-//
-//        System.out.println("Do you want to disable the Overshoot functionality? (true/false):");
-//        while (!scanner.hasNextBoolean()) {
-//            System.out.println("Please enter true or false:");
-//            scanner.next(); // Consume invalid input
-//        }
-//        boolean disableHitEvent = scanner.nextBoolean();
-//
-//        System.out.println("Do you want to disable the bounce functionality? (true/false):");
-//        while (!scanner.hasNextBoolean()) {
-//            System.out.println("Please enter true or false:");
-//            scanner.next(); // Consume invalid input
-//        }
-//        boolean disableBounceEvent = scanner.nextBoolean();
+public static void main(String[] args) {
 
-        IFacade game = new Facade();
-//        game.play(numberOfDice, numberOfPlayers, boardSize, disableHitEvent, disableBounceEvent);
-        game.play(2  , 2, 18, false, false);
+    Scanner scanner = new Scanner(System.in);
 
-//        scanner.close();
+    int numberOfDice = getInput(scanner, "How many dice do you want to play with? ", 1, 2, 1);
+    int numberOfPlayers = getInput(scanner, "Select number of players: ", 2, 4, 4);
+    int boardSize = getInput(scanner, "Select Board size: ", 18, 36, 36);
+    boolean disableHitEvent = getInputBoolean(scanner, "Do you want to disable the Overshoot functionality? (true/false)", false);
+    boolean disableBounceEvent = getInputBoolean(scanner, "Do you want to disable the bounce functionality? (true/false):", false);
+
+    IFacade game = new GameFacade();
+    game.play(numberOfDice, numberOfPlayers, boardSize, disableHitEvent, disableBounceEvent);
+
+    scanner.close();
+}
+
+
+private static int getInput(Scanner scanner, String prompt, int minValue, int maxValue, int defaultValue) {
+    System.out.println(prompt + minValue + " or " + maxValue);
+    String input = scanner.nextLine().trim();
+    if (input.isEmpty()) {
+        System.out.println("No input provided. Using default value: " + defaultValue);
+        return defaultValue;
     }
 
+    if (scanner.hasNextInt()) {
+        int value = scanner.nextInt();
+        if (value >= minValue && value <= maxValue) {
+            return value;
+        } else {
+            System.out.println("Invalid input. Using default value: " + defaultValue);
+        }
+    } else {
+        System.out.println("Invalid input. Using default value: " + defaultValue);
+        scanner.next(); // for invalid input
+    }
+    return defaultValue;
+}
 
-
+private static boolean getInputBoolean(Scanner scanner, String prompt, boolean defaultValue) {
+    System.out.println(prompt);
+    String input = scanner.nextLine().trim();
+    if (input.isEmpty()) {
+        System.out.println("No input provided. Using default value: " + defaultValue);
+        return defaultValue;
+    }
+    if (scanner.hasNextBoolean()) {
+        return scanner.nextBoolean();
+    } else {
+        System.out.println("Invalid input. Using default value: " + defaultValue);
+        scanner.next();
+    }
+    return defaultValue;
 }

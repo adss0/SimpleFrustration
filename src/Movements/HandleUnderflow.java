@@ -2,17 +2,12 @@ package Movements;
 
 import Events.EventManager;
 
-import Players.PlayerManager;
 
 public class HandleUnderflow implements IMovementHandler {
-    private final PlayerManager playerManager;
     private final IMovementHandler collisionDetector;
     private final EventManager eventManager;
 
-    public HandleUnderflow(PlayerManager playerManager,
-                           IMovementHandler collisionDetector,
-                                        EventManager eventManager) {
-        this.playerManager = playerManager;
+    public HandleUnderflow(IMovementHandler collisionDetector,EventManager eventManager) {
         this.collisionDetector = collisionDetector;
         this.eventManager = eventManager;
     }
@@ -25,7 +20,7 @@ public class HandleUnderflow implements IMovementHandler {
             return;
         }
 
-        playerManager.setPlayerPosition(player, newIndex);
+        player.setPlayerPosition(newIndex);
         eventManager.onUnderflow(player, advance, originalIndex, newIndex, moves);
     }
 }

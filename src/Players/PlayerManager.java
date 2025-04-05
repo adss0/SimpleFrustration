@@ -1,100 +1,46 @@
 package Players;
-import java.util.HashMap;
+
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class PlayerManager{
+    private final PlayerFactory playerFactory;
+    private final List<Players.Player> playerList = new ArrayList<>();;
+    private final int boardSize;
+    private final int numberOfPlayers;
 
-    private final Map<Players.Player, Integer> playerPositions = new HashMap<>();
-    private final Map<Players.Player, Integer> playerHome = new HashMap<>();
-    private final Map<Players.Player, Integer> playerEnd = new HashMap<>();
-    private final List<Players.Player> playerList;
-    private final Map<Player, Integer> lastValidPositions = new HashMap<>();
-    private final Map<Players.Player, Boolean> playerOverflowed = new HashMap<>();
-    private final int BOARD_SIZE_WITH_TAILS;
-
-    public PlayerManager(List<Players.Player> playerList, int BOARD_SIZE, int numberOfTailPositions ){
-       this.playerList =playerList;
-        this.BOARD_SIZE_WITH_TAILS = BOARD_SIZE + numberOfTailPositions;
-       initializePlayerPositions(numberOfTailPositions);
+    public PlayerManager( int boardSize, int numberOfPlayers, PlayerFactory playerFactory){
+       this.boardSize = boardSize;
+       this.numberOfPlayers = numberOfPlayers;
+       this.playerFactory = playerFactory;
+        initializePlayers();
     }
     public List<Player> getPlayerList() {
         return playerList;
     }
 
-    public Map<Player, Integer> getPlayerPositions() {
-        return playerPositions;
+    public void addPlayer(Player player) {
+        playerList.add(player);
     }
-
-    public void initializePlayerPositions(int numberOfTailPositions) {
-            for (Players.Player player : playerList) {
-            playerPositions.put(player, player.getHOME());
-            playerHome.put(player, player.getHOME());
-            playerEnd.put(player, (player.getTailDiversion() + numberOfTailPositions));
-            playerOverflowed.put(player, false);
-            lastValidPositions.put(player, player.getHOME());  // Store the initial valid position as 0
-
-        }
-    }
-
-    public int getPlayerPosition(Players.Player player) {
-        return playerPositions.getOrDefault(player, -1);
-    }
-
-    public void removePlayer(Players.Player player) {
+    public void removePlayer(Player player){
         playerList.remove(player);
-        playerPositions.remove(player);
-        playerHome.remove(player);
-        playerEnd.remove(player);
-        lastValidPositions.remove(player);
     }
 
-    public int getCurrentPosition(Players.Player player) {
-        return playerPositions.getOrDefault(player, -1);
-    }
+    public void initializePlayers(){
+        int homePosition;
+        int tailDiversion;
+        int numberOfTailPositions = (boardSize <= 18) ? 3 : 6;
+        Players.Colors[] colors = {Players.Colors.Red, Players.Colors.Blue, Players.Colors.Green, Players.Colors.Yellow};
 
-    public void setPlayerPosition(Player player, int newPosition) {
-        if (player == null) {
-            throw new IllegalArgumentException("Player cannot be null");
+        for (int i = 0; i < numberOfPlayers; i++) {
+            homePosition = (int) Math.round(1 + (i * ((double)(boardSize - 1) / numberOfPlayers)));
+            tailDiversion = (i == 0) ? boardSize : (homePosition - 1 == 0 ? homePosition : homePosition - 1);
+            Player player = playerFactory.createPlayer(colors[i], homePosition, tailDiversion, numberOfTailPositions,boardSize);
+            playerList.add(player);
+            player.setPlayerPosition(homePosition);
+            player.setLastValidPosition(homePosition);
         }
-        if (newPosition < 0 || newPosition >= BOARD_SIZE_WITH_TAILS) {
-            throw new IndexOutOfBoundsException("Invalid position");
-        }
-        if(player.isOverflowed()){
-            player.setSpecialCase(false);
-        }
-
-        lastValidPositions.put(player, playerPositions.get(player)); // Save previous
-        playerPositions.put(player, newPosition);
     }
 
-    public int getPlayerHome(Players.Player player) {
-        return playerHome.getOrDefault(player, -1);
-    }
-
-
-    public int getPlayerEnd(Players.Player player) {
-        return playerEnd.getOrDefault(player, -1);
-    }
-
-    public boolean hasOverflowed(Players.Player player) {
-        if(playerHome.getOrDefault(player, 0) == 1){
-            setOverflowed(player, true);
-        }
-        return playerOverflowed.getOrDefault(player, false);
-    }
-
-    public void setOverflowed(Players.Player player, boolean state) {
-        player.setOverflowed(state);
-        playerOverflowed.put(player, state);
-    }
-
-    public Integer getLastValidPosition(Player player){
-        return lastValidPositions.getOrDefault(player, 0);
-    }
-    public void setLastValidPosition(Player player) {
-        // Store the current position as the last valid position
-        lastValidPositions.put(player, playerPositions.get(player));
-    }
 }
 

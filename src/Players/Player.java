@@ -4,17 +4,23 @@ public class Player {
 
     private final Colors color;
     private int HOME;
+    private int END;
+    private int lastValidPosition;
+    private int playerPosition;
     private int tailDiversion;
     private boolean overflowed = false;
     private boolean isSpecialCase = false;
     private int numberOfTailPositions;
     private boolean wasCollision= false;
+    private static int boardSize;
 
-    public Player(Colors color, int HOME, int tailDiversion, int numberOfTailPositions) {
+    public Player(Colors color, int HOME, int tailDiversion, int numberOfTailPositions, int boardSize) {
         this.color = color;
         this.HOME = HOME;
         this.tailDiversion = tailDiversion;
         this.numberOfTailPositions = numberOfTailPositions;
+        this.END = tailDiversion + numberOfTailPositions;
+        this.boardSize= boardSize;
     }
 
 
@@ -39,6 +45,9 @@ public class Player {
     }
 
     public boolean isOverflowed() {
+        if(getHOME() == 1){
+            setOverflowed(true);
+        }
         return overflowed;
     }
 
@@ -68,8 +77,37 @@ public class Player {
     public void setWasCollision(boolean wasCollision) {
         this.wasCollision = wasCollision;
     }
+    public int getEND() {
+        return END;
+    }
 
+    public void setEND(int END) {
+        this.END = END;
+    }
+    public int getLastValidPosition() {
+        return lastValidPosition;
+    }
 
+    public void setLastValidPosition(int lastValidPosition) {
+        this.lastValidPosition = lastValidPosition;
+    }
+
+    public int getPlayerPosition() {
+        return playerPosition;
+    }
+
+    public void setPlayerPosition(int playerPosition) {
+        this.playerPosition = playerPosition;
+
+        if (playerPosition < 0 || playerPosition > boardSize + numberOfTailPositions) {
+            throw new IndexOutOfBoundsException("Invalid position");
+        }
+        if(isOverflowed()){
+            setSpecialCase(false);
+        }
+        setLastValidPosition(getPlayerPosition());
+        this.playerPosition = playerPosition;
+    }
 
     @Override
     public String toString() {

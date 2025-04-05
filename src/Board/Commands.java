@@ -11,7 +11,6 @@ public class Commands implements ICommands {
     private final DiceShaker shaker;
     private final Scanner scanner;
     private final PlayerManager playerManager;
-
     private Player currentPlayer;
     private int advance;
 
@@ -24,24 +23,21 @@ public class Commands implements ICommands {
 
     @Override
     public void execute() {
-        board.moves++;
+        while (!board.isGameWon()) {
+            board.moves++;
 
-        for (int i = 0; i < playerManager.getPlayerList().size() && !board.isGameWon(); ) {
-            this.currentPlayer = playerManager.getPlayerList().get(i);
-
+            for (int i = 0; i < playerManager.getPlayerList().size() && !board.isGameWon(); ) {
+                this.currentPlayer = playerManager.getPlayerList().get(i);
                 this.advance = shaker.shake();
                 board.advancePlayer(this.currentPlayer, advance);
-
                 if (board.isGameWon()) break;
 
-                System.out.println("Do you want to undo your move? (yes/no)");
-                String input = scanner.nextLine().trim().toLowerCase();
-
-                if (input.equals("yes")) {
+                if (wantsToUndo()) {
                     undo();
                 } else {
                     i++;
                 }
+            }
         }
     }
 
@@ -49,5 +45,11 @@ public class Commands implements ICommands {
     public void undo() {
             board.undoPlayerPosition(this.currentPlayer, advance);
             System.out.println(this.currentPlayer + "'s move has been undone.");
+    }
+
+    private boolean wantsToUndo() {
+        System.out.println("Do you want to undo your move? (yes/no)");
+        String input = scanner.nextLine().trim().toLowerCase();
+        return input.equals("yes");
     }
 }

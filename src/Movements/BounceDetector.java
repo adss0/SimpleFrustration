@@ -2,16 +2,13 @@ package Movements;
 
 import Players.Player;
 import Events.EventManager;
-import Players.PlayerManager;
 
 public class BounceDetector implements IMovementHandler {
 
-        private final PlayerManager playerManager;
         private final IMovementHandler collisionDetector;
         private final EventManager eventManager;
 
-        public BounceDetector(PlayerManager playerManager, IMovementHandler collisionDetector, EventManager eventManager) {
-            this.playerManager = playerManager;
+        public BounceDetector (IMovementHandler collisionDetector, EventManager eventManager) {
             this.collisionDetector = collisionDetector;
             this.eventManager = eventManager;
         }
@@ -19,7 +16,7 @@ public class BounceDetector implements IMovementHandler {
         @Override
     public void movementHandler(Players.Player player, int advance, int currentPosition, int candidateIndex, int moves) {
 
-        int END = playerManager.getPlayerEnd(player);
+        int END = player.getEND();
         int overflowAmount = candidateIndex - END;
         int newIndex = END - overflowAmount;
         newIndex = Math.max(newIndex, 0);
@@ -33,7 +30,7 @@ public class BounceDetector implements IMovementHandler {
     }
 
     private void resolveBounce(Player player, int advance, int currentPosition, int newIndex, int moves){
-        playerManager.setPlayerPosition(player, newIndex);
+        player.setPlayerPosition(newIndex);
         eventManager.onBounce(player, advance, currentPosition, newIndex, moves);
     }
 }
