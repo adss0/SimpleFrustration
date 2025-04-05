@@ -13,6 +13,7 @@ public class Facade implements IFacade {
     @Override
     public void play(int numberOfDice, int numberOfPlayers, int boardSize, boolean disableHitEvent, boolean disableBounceEvent) {
         PlayerFactory playerFactory = new PlayerFactory();
+
         List<Player> playerList = new ArrayList<>();
         int numberOfTailPositions = (boardSize <= 18) ? 3 : 6;
         Players.Colors[] colors = {Players.Colors.Red, Players.Colors.Blue, Players.Colors.Green, Players.Colors.Yellow};
@@ -40,8 +41,6 @@ public class Facade implements IFacade {
         GameBoard game = new GameBoard(boardSize, disableHitEvent, disableBounceEvent, playerManager);
 
         ICommands command = new Commands(game, factory.create(), playerManager);
-
-
 
         while (!game.isGameWon()) {
             command.execute();

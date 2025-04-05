@@ -8,7 +8,6 @@ public class FixedDiceShaker implements DiceShaker{
     @Override
     public int shake() {
         int roll = fixedDiceRoll[rollIndex];
-
         rollIndex = (rollIndex + 1) % fixedDiceRoll.length;
 
         return roll;

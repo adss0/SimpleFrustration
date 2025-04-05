@@ -27,14 +27,14 @@ public class Main {
 //            boardSize = scanner.nextInt();
 //        }
 //
-//        System.out.println("Do you want to disable the Hit functionality? (true/false):");
+//        System.out.println("Do you want to disable the Overshoot functionality? (true/false):");
 //        while (!scanner.hasNextBoolean()) {
 //            System.out.println("Please enter true or false:");
 //            scanner.next(); // Consume invalid input
 //        }
 //        boolean disableHitEvent = scanner.nextBoolean();
 //
-//        System.out.println("Do you want to disable the bounce functionaly? (true/false):");
+//        System.out.println("Do you want to disable the bounce functionality? (true/false):");
 //        while (!scanner.hasNextBoolean()) {
 //            System.out.println("Please enter true or false:");
 //            scanner.next(); // Consume invalid input
@@ -43,7 +43,7 @@ public class Main {
 
         IFacade game = new Facade();
 //        game.play(numberOfDice, numberOfPlayers, boardSize, disableHitEvent, disableBounceEvent);
-        game.play(2  , 2, 18, true, true);
+        game.play(2  , 2, 18, false, false);
 
 //        scanner.close();
     }

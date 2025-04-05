@@ -25,8 +25,7 @@ public abstract class PositionChangeEvent {
         this.totalMoves = totalMoves;
     }
 
-    public int getOldPosition() {
-        return oldPosition; }
+    public int getOldPosition() {return oldPosition; }
     public int getNewPosition() { return newPosition; }
     public int getAdvance() { return advance; }
     public int getMoves() { return moves; }
@@ -63,19 +62,15 @@ public abstract class PositionChangeEvent {
     @Override
     public String toString() {
         String rollInfo = String.format("{%s play %d rolls %d}%n", player, moves, advance);
-        String homeInfo = checkHomePosition();
         String oldPosInfo = checkTailPosition(oldPosition, true);
         String newPosInfo = checkTailPosition(newPosition, false);
 
-
-        // ✅ If old position info is empty, use home info
-        String oldPositionLabel = oldPosInfo;
         // ✅ If new position is "END", only show "END"
         String newPositionLabel = newPosInfo.equals("END") ? "END" : newPosInfo + "Position " + newPosition;
 
         return rollInfo + String.format(
                 "%s moves from %sPosition %d to %s",
-                player, oldPositionLabel, oldPosition, newPositionLabel
+                player, oldPosInfo, oldPosition, newPositionLabel
         );
     }
 }

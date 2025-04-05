@@ -8,18 +8,15 @@ public class PlayerManager{
     private final Map<Players.Player, Integer> playerPositions = new HashMap<>();
     private final Map<Players.Player, Integer> playerHome = new HashMap<>();
     private final Map<Players.Player, Integer> playerEnd = new HashMap<>();
-    private  List<Players.Player> playerList;
-    private Map<Player, Integer> lastValidPositions = new HashMap<>();
-    private Map<Players.Player, Boolean> playerOverflowed = new HashMap<>();
-    private int BOARD_SIZE_WITH_TAILS;
-    private int BOARD_SIZE;
+    private final List<Players.Player> playerList;
+    private final Map<Player, Integer> lastValidPositions = new HashMap<>();
+    private final Map<Players.Player, Boolean> playerOverflowed = new HashMap<>();
+    private final int BOARD_SIZE_WITH_TAILS;
 
-   public PlayerManager(List<Players.Player> playerList, int BOARD_SIZE, int numberOfTailPositions ){
+    public PlayerManager(List<Players.Player> playerList, int BOARD_SIZE, int numberOfTailPositions ){
        this.playerList =playerList;
-       this.BOARD_SIZE = BOARD_SIZE;
-       this.BOARD_SIZE_WITH_TAILS = BOARD_SIZE + numberOfTailPositions;
+        this.BOARD_SIZE_WITH_TAILS = BOARD_SIZE + numberOfTailPositions;
        initializePlayerPositions(numberOfTailPositions);
-
     }
     public List<Player> getPlayerList() {
         return playerList;
@@ -96,8 +93,8 @@ public class PlayerManager{
         return lastValidPositions.getOrDefault(player, 0);
     }
     public void setLastValidPosition(Player player) {
-        lastValidPositions.put(player, playerPositions.get(player));
         // Store the current position as the last valid position
+        lastValidPositions.put(player, playerPositions.get(player));
     }
 }
 

@@ -5,8 +5,6 @@ import Movements.*;
 import Players.Player;
 import Players.PlayerManager;
 
-import java.util.List;
-
 public class GameBoard implements IGameBoard {
 
     private boolean gameWon = false; // Track if someone has won
@@ -54,10 +52,9 @@ public class GameBoard implements IGameBoard {
         return gameWon;
     }
 
-
-    void advancePlayer(Player player, int advance) {
+    @Override
+    public void advancePlayer(Player player, int advance) {
         int currentPosition = playerManager.getPlayerPosition(player);
-        int HOME = playerManager.getPlayerHome(player);
         int END = playerManager.getPlayerEnd(player);
         boolean overflowed = playerManager.hasOverflowed(player);
         int candidateIndex = currentPosition + advance;

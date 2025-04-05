@@ -11,10 +11,7 @@ public class HandleOverflow implements IMovementHandler {
     private final EventManager eventManager;
     private final int BOARD_SIZE;
 
-    public HandleOverflow(PlayerManager playerManager,
-                          IMovementHandler collisionDetector,
-                          EventManager eventManager,
-                          int BOARD_SIZE) {
+    public HandleOverflow(PlayerManager playerManager, IMovementHandler collisionDetector, EventManager eventManager, int BOARD_SIZE) {
         this.playerManager = playerManager;
         this.collisionDetector = collisionDetector;
         this.eventManager = eventManager;
@@ -24,9 +21,6 @@ public class HandleOverflow implements IMovementHandler {
     public void movementHandler(Player player, int advance, int originalIndex, int candidateIndex, int moves) {
         int newIndex = (candidateIndex > BOARD_SIZE) ? (candidateIndex % BOARD_SIZE) : candidateIndex;
 
-//        if (!disableHitEvent && collisionDetector.movementHandler(player, advance, originalIndex, newIndex, moves)) {
-//            return;
-//        }
         collisionDetector.movementHandler(player, advance, originalIndex, newIndex, moves);
         if (player.isWasCollision()) {
             return;

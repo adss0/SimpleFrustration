@@ -10,9 +10,7 @@ public class BounceDetector implements IMovementHandler {
         private final IMovementHandler collisionDetector;
         private final EventManager eventManager;
 
-        public BounceDetector(PlayerManager playerManager,
-                              IMovementHandler collisionDetector,
-                                     EventManager eventManager) {
+        public BounceDetector(PlayerManager playerManager, IMovementHandler collisionDetector, EventManager eventManager) {
             this.playerManager = playerManager;
             this.collisionDetector = collisionDetector;
             this.eventManager = eventManager;
@@ -26,9 +24,6 @@ public class BounceDetector implements IMovementHandler {
         int newIndex = END - overflowAmount;
         newIndex = Math.max(newIndex, 0);
 
-//        if (!disableHitEvent && collisionDetector.movementHandler(player, advance, currentPosition, newIndex, moves)) {
-//            return;
-//        }
         collisionDetector.movementHandler(player, advance, currentPosition, newIndex, moves);
             if (player.isWasCollision()) {
                 return;

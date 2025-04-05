@@ -2,7 +2,7 @@ package Players;
 
 public class Player {
 
-    private Colors color;
+    private final Colors color;
     private int HOME;
     private int tailDiversion;
     private boolean overflowed = false;
@@ -15,7 +15,6 @@ public class Player {
         this.HOME = HOME;
         this.tailDiversion = tailDiversion;
         this.numberOfTailPositions = numberOfTailPositions;
-        this.isSpecialCase = false;
     }
 
 

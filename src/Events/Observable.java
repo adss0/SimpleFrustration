@@ -20,13 +20,7 @@ public class Observable implements GameBoardObserver {
     }
 
     @Override
-    public void onEvent(BounceEvent onBounceEvent) {
-        System.out.format("%s%n", onBounceEvent);
-
-    }
+    public void onEvent(BounceEvent onBounceEvent) {System.out.format("%s%n", onBounceEvent);}
     @Override
-    public void onEvent(HitEvent onHitEvent) {
-        System.out.format("%s%n", onHitEvent);
-
-    }
+    public void onEvent(HitEvent onHitEvent) { System.out.format("%s%n", onHitEvent);}
 }
