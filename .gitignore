@@ -28,26 +28,3 @@ bin/
 ### Mac OS ###
 .DS_Store
 
-# IDE & Editor files
-.idea/
-*.iml
-*.swp
-*.swo
-
-# Build & Dependency directories
-target/
-build/
-dependency-reduced-pom.xml
-
-# Maven logs & temp files
-*.log
-*.tmp
-
-# OS-specific files
-Thumbs.db
-
-# Spigot/Bukkit server files (if accidentally committed)
-server.jar
-plugins/
-world/
-logs/

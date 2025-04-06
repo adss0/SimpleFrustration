@@ -7,7 +7,7 @@ This project is a simulation of the **Simple Frustration** board game, implement
 ---
 
 ## Table of Contents
-1. [Architecture Overview](#architecture-overview)
+1. [Variations](#variations)
 2. [Key Classes & Responsibilities](#key-classes--responsibilities)
 3. [Program Execution Flow](#program-execution-flow)
 4. [Advanced Features](#advanced-features)
@@ -40,18 +40,52 @@ These variations are controlled via the setup parameters in `Game.com.simpleFrus
 ## Project Structure
 ````
 src/
-├── com.simpleFrustration.facade.GameFacade
-├── com.simpleFrustration.facade.IFacade
-├── com.simpleFrustration.config.GameConfiguration
-├── main/
-│   ├── java/
-│   │   ├── Game.Board/          # Game board logic
-│   │   ├── Game.Dice/           # Game.Dice rolling mechanics
-│   │   ├── Game.Events/         # Game event handling
-│   │   ├── Game.Movements/      # Player movement logic
-│   │   ├── Game.Players/        # Player management
-│   │   └── Game.com.simpleFrustration.Main.java       # Entry point
-│   └── resources/
+└── com/
+    └── simpleFrustration/
+        ├── board/  # Contains logic related to the game board
+        │   ├── Commands.java    # Game commands for the board
+        │   ├── GameBoard.java   # Main game board logic
+        │   ├── ICommands.java   # Interface for game commands
+        │   └── IGameBoard.java  # Interface for game board functionality
+        ├── config/  # Game settings configuration
+        │   └── GameConfiguration.java   # Setup and configuration for the game
+        ├── dice/  # Dice logic and dice selection
+        │   ├── DiceShaker.java          # Dice shaking Interface
+        │   ├── DiceShakerFactory.java   # Factory to create DiceShaker instances
+        │   ├── DiceShakerFactoryManager.java # Choose between different DiceShakers
+        │   ├── FixedDiceShaker.java     # Implementation of a fixed dice shaker
+        │   ├── FixedDiceShakerFactory.java  # Factory for fixed dice shakers
+        │   ├── RandomDoubleDiceShaker.java  # Random double dice shaker
+        │   ├── RandomDoubleDiceShakerFactory.java  # Factory for random double dice
+        │   └── RandomSingleDiceShaker.java  # Random single dice shakers
+        │   └── RandomSingleDiceShakerFactory.java  # Factory for random single dice shakers
+        ├── events/  # Event handling during the game
+        │   ├── CollisionEvent.java        # Event for collision
+        │   ├── EventManager.java          # Manages all events in the game
+        │   ├── GameBoardObserver.java    # Interface for observable objects 
+        │   ├── HomeEvent.java            # Event related to home position
+        │   ├── Observable.java           # Observes game board events
+        │   ├── OverflowEvent.java        # Event for overflow situations
+        │   ├── OvershootEvent.java       # Event for overshoot situations
+        │   ├── PositionChangeEvent.java  # Event for position changes
+        │   └── UnderflowEvent.java       # Event for underflow situations
+        ├── facade/  # Facade pattern for initializing the game
+        │   ├── GameFacade.java   # Game facade to handle game setup and interactions
+        │   └── IFacade.java      # Interface for the game facade
+        ├── movements/  # Handle different types of movements during the game
+        │   ├── HandleCollision.java     # Handles collision scenarios
+        │   ├── HandleOverflow.java     # Handles overflow scenarios
+        │   ├── HandleOvershoot.java    # Handles overshoot scenarios
+        │   ├── HandleUnderflow.java    # Handles underflow scenarios
+        │   └── IMovementHandler.java   # Interface for movement handling
+        ├── players/  # Player-related configurations and management
+        │   ├── Colors.java         # Enum for player colors
+        │   ├── IPlayerFactory.java  # Interface for player factory
+        │   ├── Player.java         # Player class with attributes and actions
+        │   ├── PlayerFactory.java  # Factory for creating players
+        │   └── PlayerManager.java  # Manages the players in the game
+        └── Main.java   # Entry point to start the game
+
 ````
 
 ## 🧠 Design Patterns Used
