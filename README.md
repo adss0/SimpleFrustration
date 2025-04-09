@@ -6,37 +6,95 @@ This project is a simulation of the **Simple Frustration** board game, implement
 
 ---
 
-## Table of Contents
-1. [Variations](#variations)
-2. [Key Classes & Responsibilities](#key-classes--responsibilities)
-3. [Program Execution Flow](#program-execution-flow)
-4. [Advanced Features](#advanced-features)
-5. [Design Patterns](#design-patterns)
-6. [UML Diagrams](#uml-diagrams)
-
-
-
-## 🔧 Variations
-
-| Variation             | Description                                                                                     |
-|-----------------------|-------------------------------------------------------------------------------------------------|
-| **End Rule**          | Player must land **exactly** on the END position to win. If they overshoot, they "bounce back". |
-| **Hit Rule**          | When a player lands on another, the hit player is sent back to their home.                      |
-| **Single Die Option** | Can play with either one 6-sided die or two.                                                    |
-| **Large Game.Board**       | Supports board Size for 36 player positions with 6 tail positions.                              |
-
-These variations are controlled via the setup parameters in `Game.com.simpleFrustration.Main.java`, allowing dynamic simulation configuration.
+## 📚 Table of Contents
+1. [Key Classes & Responsibilities](#key-classes--responsibilities)
+2. [Program Execution Flow](#program-execution-flow)
+3. [Advanced Features & Variations](#advanced-features--variations)
+4. [Design Patterns](#design-patterns)
+5. [UML Diagrams](#uml-diagrams)
 
 ---
 
-## 🚀 Advanced Features
+## 🚀 Features & Variations
 
-| Feature          | Description                                                                                                        |
-|------------------|--------------------------------------------------------------------------------------------------------------------|
-| **Four Game.Players** | Supports Red, Blue, Green, and Yellow players. Automatically calculates Home and End positions for both board sizes. |
-| **Undo Move**    | After each move, player can undo and retry.      |
+### Key Features:
+- **Undo Move**: Players can undo their last move and retry their turn if needed. This feature helps test different strategies and correct mistakes.
+- **Four Players Support**: Up to four players (Red, Blue, Green, Yellow) are supported, with automatic home and end positions based on the board size.
+- **Dice Options**: The game supports both single and double dice rolls for varying gameplay dynamics.
 
---- 
+### Variations:
+- **End Rule**: A player must land **exactly** on the END position to win. If a player overshoots, they "bounce back" to their last valid position.
+- **Hit Rule**: If a player lands on another player’s position, the hit player is sent back to their home.
+- **Board Sizes**:
+    - **Basic Board** (18 positions, 3 tail positions)
+    - **Large Board** (36 positions, 6 tail positions)
+
+---
+
+## 📦 Key Classes & Responsibilities
+
+| Class                      | Responsibility                                                                                                                                                              |
+|----------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `Main.java`                | The entry point of the application. This class sets up the board and starts the game.                                                                                       |
+| `GameFacade.java`          | Manages the initialization of all required classes based on the selected game variations and settings.                                                                      |
+| `GameConfiguration.java`   | Prompts the player to select game settings, including board and player variations, as well as the modes.                                                                    |
+| `Player.java`              | Represents a player, including their position on the board, color, and status.                                                                                              |
+| `GameBoard.java`           | Contains the core game logic, such as managing the board state, player positions, win conditions, and handling player movements, including undo functionality.              |
+| `PlayerManager.java`       | Handles the creation of players using the `PlayerFactory`, initializing them based on board size and count, and stores them in an array list.                               |
+| `PlayerFactory.java`       | Implements the **Factory Pattern** to create player objects with specific configurations.                                                                                   |
+| `DiceShaker.java`          | An interface for shaking dice, allowing for different strategies, such as single or double dice rolls, using the **Strategy Pattern**.                                      |
+| `DiceShakManager.java`     | Provides the correct `DiceShaker` instance depending on the selected game settings.                                                                                         |
+| `Commands.java`            | Executes player movements, including advancing positions and undoing moves.                                                                                                 |
+| `PositionChangeEvent.java` | Handles and displays updates regarding a player's position, such as home, tail, or end positions.                                                                           |
+| `Observable.java`          | Implements the **Observer Pattern** by utilizing the `GameBoardObserver` interface to notify observers of game state changes.                                               |
+| `IMovementHandler.java`    | An interface that passes movement-related information to specific movement handlers, such as `HandleCollision`, `HandleOverflow`, `HandleOvershoot`, and `HandleUnderflow`. |
+
+## 🔄 Program Execution Flow
+
+### 1. **Initialization**
+- The game starts by invoking the `Main.java` class, which serves as the entry point.
+- `GameConfiguration.java` is instantiated, where players are prompted to select game settings (board size, player count, variations).
+- The settings are passed to `GameFacade.java`, which acts as a **Facade Pattern** to initialize various components such as:
+    - `GameBoard.java`: For board setup and management.
+    - `PlayerFactory.java`: To be passed into `PlayerManager` and create a player Object.
+    - `PlayerManager.java`: For managing players and tracking their positions.
+    - `Commands.java`: Handles user inputs for game commands (e.g., move, undo).
+
+### 2. **Game Loop**
+- Once initialization is complete, the game enters the main loop, where players take turns.
+- During each turn:
+    - Players roll dice using a `DiceShaker` instance (either a single or double dice roll, depending on the selected settings).
+    - Player movement is processed and validated by the `GameBoard.java` class. The system checks for collisions, overshoots, or underflows.
+    - The game state is updated, and events are triggered as necessary (e.g., **CollisionEvent**, **OverflowEvent**).
+
+### 3. **Turn Management**
+- Each player's turn is tracked, and they are asked whether they want to undo their last move (if the undo feature is enabled).
+- The game checks for win conditions after every move:
+    - A player wins if they reach the END position, considering any specific rules such as "End Rule" or "Hit Rule."
+    - The board is updated, and the status is displayed (such as player positions and turn count).
+
+### 4. **Event Handling**
+- Events such as position changes, collisions, and overflow situations are captured and processed via the `events/` package.
+- The `Observable.java` class, using the **Observer Pattern**, notifies relevant components about the changes in the game state.
+- Events like **PositionChangeEvent** and **CollisionEvent** are handled by respective classes in the `events/` package to reflect real-time updates on the game state.
+
+### 5. **End Condition**
+- The game ends when a player reaches the end position (according to the movement rules).
+- The winner is declared, and the game exits, displaying the final status and number of turns taken.
+
+By following this flow, the game ensures smooth execution, correct handling of variations, and a clear end condition.
+
+## 🧠 Design Patterns Used
+
+| Pattern                  | Usage                                                                                                                                                                                                                            |
+|--------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Factory Pattern**      | - **`PlayerFactory.java`**: Creates player objects with specific configurations.                                                                                                                                                 |
+| **Strategy Pattern**     | - **`DiceShakerManager.java`**: Allows for different dice rolling strategies (single or double dice). <br> - **`IMovementHandler.java`**: Switches between different movement strategies such as overflow or collision handling. |
+| **Observer Pattern**     | - **`Observable.java`**: Implements the observer pattern by notifying observers (e.g., game board state changes).                                                                                                                |
+| **Facade Pattern**       | - **`GameFacade.java`**: Simplifies the game initialization process, providing a central interface for setting up the game.                                                                                                      |
+| **Command Pattern**      | - **`Commands.java`**: Encapsulates player movements (e.g., advance, undo) as command objects for flexible execution.                                                                                                            |
+| **Dependency Injection** | - **`PlayerManager.java`**: The `PlayerFactory` is injected into the constructor, promoting loose coupling and increasing flexibility and testability.                                                                           |
+
 ## Project Structure
 ````
 src/
@@ -51,14 +109,12 @@ src/
         │   └── GameConfiguration.java   # Setup and configuration for the game
         ├── dice/  # Dice logic and dice selection
         │   ├── DiceShaker.java          # Dice shaking Interface
-        │   ├── DiceShakerFactory.java   # Factory to create DiceShaker instances
-        │   ├── DiceShakerFactoryManager.java # Choose between different DiceShakers
+        │   ├── DiceShakerManager.java # Choose between different DiceShakers
         │   ├── FixedDiceShaker.java     # Implementation of a fixed dice shaker
+        │   ├── IDiceShakerManager.java 
         │   ├── FixedDiceShakerFactory.java  # Factory for fixed dice shakers
         │   ├── RandomDoubleDiceShaker.java  # Random double dice shaker
-        │   ├── RandomDoubleDiceShakerFactory.java  # Factory for random double dice
         │   └── RandomSingleDiceShaker.java  # Random single dice shakers
-        │   └── RandomSingleDiceShakerFactory.java  # Factory for random single dice shakers
         ├── events/  # Event handling during the game
         │   ├── CollisionEvent.java        # Event for collision
         │   ├── EventManager.java          # Manages all events in the game
@@ -87,33 +143,124 @@ src/
         └── Main.java   # Entry point to start the game
 
 ````
+## UML Diagram
 
-## 🧠 Design Patterns Used
+```mermaid
+classDiagram
+    class Main
+    Main --> GameFacade
 
-| Pattern              | Usage                                                                           |
-|----------------------|---------------------------------------------------------------------------------|
-| **Factory Pattern**  | `PlayerFactory` creates different players without exposing instantiation logic. |
-| **Strategy Pattern** | `DiceShaker` interface allows use of either single or double dice strategies.   |
-| **Observer Pattern** | `Observerable` implements the `GameBoardObserver`                               |
-| ** Facade Pattern**  | `com.simpleFrustration.facade.GameFacade` is a stateless Facade which implements a `com.simpleFrustration.facade.IFacade` interface       | 
----
+    class GameFacade {
+        +setupGame()
+    }
+    GameFacade --> GameConfiguration
+    GameFacade --> GameBoard
+    GameFacade --> PlayerManager
+    GameFacade --> Commands
+    GameFacade --> DiceShakerManager
 
-## 📦 Key Classes & Responsibilities
+    class GameConfiguration {
+        +getSettings()
+    }
 
-| Class                    | Responsibility                                                                                           |
-|-------------------------|----------------------------------------------------------------------------------------------------------|
-| `Game.com.simpleFrustration.Main.java`             | Entry point of the program; configure and starts the game.                                               |
-| `GameBoard.java`        | Represents the board logic, handles movement, hit detection, win condition, and undo functionality.      |
-| `Player.java`           | Represents a player in the game; stores position, color, and home and end locations.                     |
-| `PlayerManager.java`    | Manages creation and tracking of players using the `PlayerFactory`. Initializes players based on board size and count. |
-| `PlayerFactory.java`    | Implements the **Factory Design Pattern** to create player objects with configured attributes.           |
-| `DiceShaker.java`       | Interface for shaking dice. Allows swapping between single and double die via strategy pattern.          |
-| `DiceShakerFactoryManager.java` | Returns the correct `DiceShaker` instance depending on game settings.                                    |
-| `Commands.java`         | Executes player movement.                                                                                |
-| `ICommands.java`        | Command pattern interface for encapsulating game execution.                                         |
+    class Player {
+        -position
+        -color
+        -status
+        +move()
+        +undoMove()
+    }
 
----
+    class PlayerManager {
+        -players : List<Player>
+        +createPlayers()
+        +getCurrentPlayer()
+    }
 
+    class PlayerFactory {
+        +createPlayer(color, position)
+    }
+
+    PlayerManager --> PlayerFactory
+    PlayerManager --> Player
+
+    class DiceShaker {
+        <<interface>>
+        +roll() int
+    }
+
+    class DiceShakerManager {
+        +getShaker()
+    }
+
+    class RandomSingleDiceShaker
+    class RandomDoubleDiceShaker
+    class FixedDiceShaker
+
+    DiceShakerManager --> DiceShaker
+    RandomSingleDiceShaker --> DiceShaker
+    RandomDoubleDiceShaker --> DiceShaker
+    FixedDiceShaker --> DiceShaker
+
+    class GameBoard {
+        +movePlayer()
+        +checkWin()
+        +undoMove()
+    }
+
+    class Commands {
+        +executeMove()
+        +executeUndo()
+    }
+
+    GameBoard --> Player
+    Commands --> GameBoard
+
+    class IMovementHandler {
+        <<interface>>
+        +handle()
+    }
+
+    class HandleCollision
+    class HandleOverflow
+    class HandleOvershoot
+    class HandleUnderflow
+
+    HandleCollision --> IMovementHandler
+    HandleOverflow --> IMovementHandler
+    HandleOvershoot --> IMovementHandler
+    HandleUnderflow --> IMovementHandler
+
+    GameBoard --> IMovementHandler
+
+    class Observable {
+        +addObserver()
+        +notifyObservers()
+    }
+
+    class GameBoardObserver {
+        <<interface>>
+    }
+
+    class EventManager
+    class PositionChangeEvent
+    class CollisionEvent
+    class OverflowEvent
+    class OvershootEvent
+    class UnderflowEvent
+    class HomeEvent
+
+    Observable --> GameBoardObserver
+    EventManager --> PositionChangeEvent
+    EventManager --> CollisionEvent
+    EventManager --> OverflowEvent
+    EventManager --> OvershootEvent
+    EventManager --> UnderflowEvent
+    EventManager --> HomeEvent
+    GameBoard --> Observable
+
+ 
+```
 ## 📊 Game Outputs
 
 During gameplay, the following information is printed:

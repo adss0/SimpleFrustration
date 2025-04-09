@@ -5,7 +5,7 @@ import com.simpleFrustration.movements.*;
 import com.simpleFrustration.players.Player;
 import com.simpleFrustration.players.PlayerManager;
 
-public class GameBoard implements IGameBoard {
+public class GameBoard {
 
     private boolean gameWon = false; // Track if someone has won
     public static int moves;
@@ -29,12 +29,10 @@ public class GameBoard implements IGameBoard {
         this.handleOverflow = new HandleOverflow( collisionDetector, this.eventManager, this.BOARD_SIZE);
     }
 
-    @Override
     public boolean isGameWon() {
         return gameWon;
     }
 
-    @Override
     public void advancePlayer(Player player, int advance) {
         int currentPosition = player.getPlayerPosition();
         int END = player.getEND();
@@ -71,7 +69,7 @@ public class GameBoard implements IGameBoard {
             e.printStackTrace();
         }
     }
-    @Override
+
     public void undoPlayerPosition(Player player, int advance) {
         // Get the last valid position
         int lastValidPosition = player.getLastValidPosition();
