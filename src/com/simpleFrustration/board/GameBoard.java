@@ -23,10 +23,10 @@ public class GameBoard {
         this.BOARD_SIZE = BOARD_SIZE;
         this.disableBounceEvent = disableBounceEvent;
         eventManager = new EventManager();
-        IMovementHandler collisionDetector = new HandleCollision(playerManager, disableHitEvent, this.eventManager);
-        this.bounceDetector = new HandleOvershoot(collisionDetector, this.eventManager);
-        this.handleUnderflow = new HandleUnderflow(collisionDetector, this.eventManager);
-        this.handleOverflow = new HandleOverflow( collisionDetector, this.eventManager, this.BOARD_SIZE);
+        IMovementHandler handleCollision= new HandleCollision(playerManager, disableHitEvent, this.eventManager);
+        this.bounceDetector = new HandleOvershoot(handleCollision, this.eventManager);
+        this.handleUnderflow = new HandleUnderflow(handleCollision, this.eventManager);
+        this.handleOverflow = new HandleOverflow( handleCollision, this.eventManager, this.BOARD_SIZE);
     }
 
     public boolean isGameWon() {

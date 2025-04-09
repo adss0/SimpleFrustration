@@ -21,8 +21,6 @@ public class HandleUnderflow implements IMovementHandler {
         if (player.isWasCollision()) {
             return;
         }
-//        System.out.println(newIndex + " this is the new index for the player");
-//        System.out.println(originalIndex + " this is the original index for the player");
         player.setPlayerPosition(newIndex);
         eventManager.onUnderflow(player, advance, originalIndex, newIndex, moves);
     }

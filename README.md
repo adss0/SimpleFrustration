@@ -42,10 +42,9 @@ This project is a simulation of the **Simple Frustration** board game, implement
 | `GameBoard.java`           | Contains the core game logic, such as managing the board state, player positions, win conditions, and handling player movements, including undo functionality.              |
 | `PlayerManager.java`       | Handles the creation of players using the `PlayerFactory`, initializing them based on board size and count, and stores them in an array list.                               |
 | `PlayerFactory.java`       | Implements the **Factory Pattern** to create player objects with specific configurations.                                                                                   |
-| `DiceShaker.java`          | An interface for shaking dice, allowing for different strategies, such as single or double dice rolls, using the **Strategy Pattern**.                                      |
-| `DiceShakManager.java`     | Provides the correct `DiceShaker` instance depending on the selected game settings.                                                                                         |
-| `Commands.java`            | Executes player movements, including advancing positions and undoing moves.                                                                                                 |
-| `PositionChangeEvent.java` | Handles and displays updates regarding a player's position, such as home, tail, or end positions.                                                                           |
+| `DiceShakManager.java`     | Provides the correct `DiceShaker` interface instance depending on the selected game settings using the **Strategy pattern**.                                                |
+| `Commands.java`            | Executes player movements, including advancing positions and undoing moves implementing the `Command Pattern`.                                                              |
+| `PositionChangeEvent.java` | Parent Class that displays updates regarding a player's position, such as home, tail, or end positions.                                                                     |
 | `Observable.java`          | Implements the **Observer Pattern** by utilizing the `GameBoardObserver` interface to notify observers of game state changes.                                               |
 | `IMovementHandler.java`    | An interface that passes movement-related information to specific movement handlers, such as `HandleCollision`, `HandleOverflow`, `HandleOvershoot`, and `HandleUnderflow`. |
 
@@ -86,14 +85,41 @@ By following this flow, the game ensures smooth execution, correct handling of v
 
 ## 🧠 Design Patterns Used
 
-| Pattern                  | Usage                                                                                                                                                                                                                            |
-|--------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Factory Pattern**      | - **`PlayerFactory.java`**: Creates player objects with specific configurations.                                                                                                                                                 |
-| **Strategy Pattern**     | - **`DiceShakerManager.java`**: Allows for different dice rolling strategies (single or double dice). <br> - **`IMovementHandler.java`**: Switches between different movement strategies such as overflow or collision handling. |
-| **Observer Pattern**     | - **`Observable.java`**: Implements the observer pattern by notifying observers (e.g., game board state changes).                                                                                                                |
-| **Facade Pattern**       | - **`GameFacade.java`**: Simplifies the game initialization process, providing a central interface for setting up the game.                                                                                                      |
-| **Command Pattern**      | - **`Commands.java`**: Encapsulates player movements (e.g., advance, undo) as command objects for flexible execution.                                                                                                            |
-| **Dependency Injection** | - **`PlayerManager.java`**: The `PlayerFactory` is injected into the constructor, promoting loose coupling and increasing flexibility and testability.                                                                           |
+### **Factory Pattern**
+- **Class**: `PlayerFactory.java`
+- **Explanation**: The Factory Pattern is used to create player objects with specific configurations. It centralizes the creation logic, making it easier to modify and manage.
+
+### **Strategy Pattern**
+- **Class**: `DiceShakerManager.java`
+- **Explanation**: The Strategy Pattern allows different dice-rolling strategies (single, double, or fixed) using `DiceShaker` interface. The `DiceShakerManager` handles the strategy selection, enabling flexibility in dice behavior.
+
+#### **Dependency Injection**
+- **Class**: `PlayerManager.java`
+- **Explanation**: Dependency Injection promotes loose coupling by injecting dependencies (like `PlayerFactory`) into the `PlayerManager`, making the code more flexible and testable.
+
+- **Class**: `Commands.java`
+- **Explanation**: Dependencies such as `PlayerManager`, `GameBoard`, and `DiceShaker` are injected, increasing flexibility and making the system easier to modify and test.
+
+- **Class**: `GameBoard.java`
+- **Explanation**: Dependencies such as `PlayerManager`, and `DiceShaker` are injected into the class
+
+- **Package**: `movements/`
+- **Explanation**: Dependencies such as `PlayerManager`, and `EventManager` are injected into the class
+
+- **Package : `events/`
+- **Explanation**: Dependencies such as `Player` are injected to print out that specific player movements.
+
+### **Observer Pattern**
+- **Class**: `Observable.java` and `GameBoardObserver.java`
+- **Explanation**: The Observer Pattern notifies observers (like `GameBoardObserver`) of game state changes. It decouples event handling from the event source, making the system more flexible.
+
+### **Facade Pattern**
+- **Class**: `GameFacade.java`
+- **Explanation**: The Facade Pattern simplifies game setup by providing a central interface that hides the complexities of initializing the game, making it easier to interact with.
+
+### **Command Pattern**
+- **Class**: `Commands.java`
+- **Explanation**: The Command Pattern encapsulates actions (like player movements) as objects. It decouples the invoker from the action, allowing for flexible execution and undoing.
 
 ## Project Structure
 ````
@@ -112,7 +138,6 @@ src/
         │   ├── DiceShakerManager.java # Choose between different DiceShakers
         │   ├── FixedDiceShaker.java     # Implementation of a fixed dice shaker
         │   ├── IDiceShakerManager.java 
-        │   ├── FixedDiceShakerFactory.java  # Factory for fixed dice shakers
         │   ├── RandomDoubleDiceShaker.java  # Random double dice shaker
         │   └── RandomSingleDiceShaker.java  # Random single dice shakers
         ├── events/  # Event handling during the game
@@ -146,159 +171,362 @@ src/
 ## UML Diagram
 
 ```mermaid
-classDiagram
-    class Main
-    Main --> GameFacade
+ classDiagram
+%% Main Class
+  class Main {
+    +main(String[] args): void
+  }
 
-    class GameFacade {
-        +setupGame()
-    }
-    GameFacade --> GameConfiguration
-    GameFacade --> GameBoard
-    GameFacade --> PlayerManager
-    GameFacade --> Commands
-    GameFacade --> DiceShakerManager
+%% Facade and Interfaces
+  class IFacade {
+    <<interface>>
+    +play(numberOfDice: int, numberOfPlayers: int, boardSize: int, disableCollision: boolean, disableOvershoot: boolean, scanner: Scanner): void
+  }
 
-    class GameConfiguration {
-        +getSettings()
-    }
+  class GameFacade {
+    +play(numberOfDice: int, numberOfPlayers: int, boardSize: int, disableCollision: boolean, disableOvershoot: boolean, scanner: Scanner): void
+  }
 
-    class Player {
-        -position
-        -color
-        -status
-        +move()
-        +undoMove()
-    }
+%% Game Configuration
+  class GameConfiguration {
+    +getNumberOfDice(): int
+    +getNumberOfPlayers(): int
+    +getBoardSize(): int
+    +isDisableCollision(): boolean
+    +isDisableOvershoot(): boolean
+    -getInput(scanner: Scanner, prompt: String, minValue: int, maxValue: int, defaultValue: int): int
+    -getInputBoolean(scanner: Scanner, prompt: String, defaultValue: boolean): boolean
+  }
 
-    class PlayerManager {
-        -players : List<Player>
-        +createPlayers()
-        +getCurrentPlayer()
-    }
+%% Dice Logic
+  class IDiceShakerManager {
+    <<interface>>
+    +createDiceShaker(numberOfDice: int): DiceShaker
+  }
+  class DiceShakerManager {
+    +createDiceShaker(numberOfDice: int): DiceShaker
+  }
 
-    class PlayerFactory {
-        +createPlayer(color, position)
-    }
+  class DiceShaker {
+    <<interface>>
+    +shake(): int
+  }
 
-    PlayerManager --> PlayerFactory
-    PlayerManager --> Player
+  class FixedDiceShaker {
+    +shake(): int
+  }
 
-    class DiceShaker {
-        <<interface>>
-        +roll() int
-    }
+  class RandomSingleDiceShaker {
+    +shake(): int
+  }
 
-    class DiceShakerManager {
-        +getShaker()
-    }
+  class RandomDoubleDiceShaker {
+    +shake(): int
+  }
 
-    class RandomSingleDiceShaker
-    class RandomDoubleDiceShaker
-    class FixedDiceShaker
+%% Player 
+  class Colors {
+    <<enumeration>>
+    +Red
+    +Blue
+    +Green
+    +Yellow
+  }
 
-    DiceShakerManager --> DiceShaker
-    RandomSingleDiceShaker --> DiceShaker
-    RandomDoubleDiceShaker --> DiceShaker
-    FixedDiceShaker --> DiceShaker
+  class IPlayerFactory {
+    <<interface>>
+    +createPlayer(color: Colors, HOME: int, tailDiversion: int, numberOfTailPositions: int, boardSize: int): Player
+  }
 
-    class GameBoard {
-        +movePlayer()
-        +checkWin()
-        +undoMove()
-    }
+  class Player {
+    -color: Colors
+    -HOME: int
+    -END: int
+    -lastValidPosition: int
+    -playerPosition: int
+    -tailDiversion: int
+    -overflowed: boolean
+    -isSpecialCase: boolean
+    -numberOfTailPositions: int
+    -wasCollision: boolean
+    -boardSize: int
+    +Player(color: Colors, HOME: int, tailDiversion: int, numberOfTailPositions: int, boardSize: int)
+    +getHOME(): int
+    +setHOME(HOME: int): void
+    +getTailDiversion(): int
+    +setTailDiversion(tailDiversion: int): void
+    +getColor(): Colors
+    +isOverflowed(): boolean
+    +setOverflowed(overflowed: boolean): void
+    +getNumberOfTailPositions(): int
+    +setNumberOfTailPositions(numberOfTailPositions: int): void
+    +isSpecialCase(): boolean
+    +setSpecialCase(specialCase: boolean): void
+    +isWasCollision(): boolean
+    +setWasCollision(wasCollision: boolean): void
+    +getEND(): int
+    +setEND(END: int): void
+    +getLastValidPosition(): int
+    +setLastValidPosition(lastValidPosition: int): void
+    +getPlayerPosition(): int
+    +setPlayerPosition(playerPosition: int): void
+    +toString(): String
+  }
 
-    class Commands {
-        +executeMove()
-        +executeUndo()
-    }
+  class PlayerFactory {
+    +createPlayer(color: Colors, HOME: int, tailDiversion: int, numberOfTailPositions: int, boardSize: int): Player
+  }
 
-    GameBoard --> Player
-    Commands --> GameBoard
+  class PlayerManager {
+    -playerFactory: PlayerFactory
+    -playerList: List<Player>
+    -boardSize: int
+    -numberOfPlayers: int
+    +PlayerManager(boardSize: int, numberOfPlayers: int, playerFactory: PlayerFactory)
+    +getPlayerList(): List<Player>
+    +addPlayer(player: Player): void
+    +removePlayer(player: Player): void
+    +initializePlayers(): void
+  }
 
-    class IMovementHandler {
-        <<interface>>
-        +handle()
-    }
+%% Game Board
+  class ICommands {
+    <<interface>>
+    +execute(): void
+    +undo(): void
+  }
 
-    class HandleCollision
-    class HandleOverflow
-    class HandleOvershoot
-    class HandleUnderflow
+  class Commands {
+    -board: GameBoard
+    -shaker: DiceShaker
+    -scanner: Scanner
+    -playerManager: PlayerManager
+    -currentPlayer: Player
+    -advance: int
+    +Commands(board: GameBoard, shaker: DiceShaker, playerManager: PlayerManager, scanner: Scanner)
+    +execute(): void
+    +undo(): void
+  }
 
-    HandleCollision --> IMovementHandler
-    HandleOverflow --> IMovementHandler
-    HandleOvershoot --> IMovementHandler
-    HandleUnderflow --> IMovementHandler
+  class GameBoard {
+    -gameWon: boolean
+    -moves: int
+    -totalMoves: int
+    -BOARD_SIZE: int
+    -disableBounceEvent: boolean
+    -eventManager: EventManager
+    -bounceDetector: IMovementHandler
+    -handleUnderflow: IMovementHandler
+    -handleOverflow: IMovementHandler
+    +GameBoard(BOARD_SIZE: int, disableHitEvent: boolean, disableBounceEvent: boolean, playerManager: PlayerManager)
+    +isGameWon(): boolean
+    +advancePlayer(player: Player, advance: int): void
+    +undoPlayerPosition(player: Player, advance: int): void
+  }
 
-    GameBoard --> IMovementHandler
+%%Movements 
+  class IMovementHandler {
+    <<interface>>
+    +movementHandler(player: Player, advance: int, originalIndex: int, newIndex: int, moves: int): void
+  }
 
-    class Observable {
-        +addObserver()
-        +notifyObservers()
-    }
+  class HandleCollision {
+    -playerManager: PlayerManager
+    -disableHitEvent: boolean
+    -eventManager: EventManager
+    +HandleCollision(playerManager: PlayerManager, disableHitEvent: boolean, eventManager: EventManager)
+    +movementHandler(player: Player, advance: int, currentPosition: int, candidateIndex: int, moves: int): void
+    -resolveCollision(otherPlayer: Player, player: Player, candidateIndex: int, advance: int, currentPosition: int, moves: int): void
+  }
 
-    class GameBoardObserver {
-        <<interface>>
-    }
+  class HandleOverflow {
+    -collisionDetector: IMovementHandler
+    -eventManager: EventManager
+    -BOARD_SIZE: int
+    +HandleOverflow(collisionDetector: IMovementHandler, eventManager: EventManager, BOARD_SIZE: int)
+    +movementHandler(player: Player, advance: int, originalIndex: int, candidateIndex: int, moves: int): void
+  }
 
-    class EventManager
-    class PositionChangeEvent
-    class CollisionEvent
-    class OverflowEvent
-    class OvershootEvent
-    class UnderflowEvent
-    class HomeEvent
+  class HandleOvershoot {
+    -collisionDetector: IMovementHandler
+    -eventManager: EventManager
+    +HandleOvershoot(collisionDetector: IMovementHandler, eventManager: EventManager)
+    +movementHandler(player: Player, advance: int, currentPosition: int, candidateIndex: int, moves: int): void
+    -resolveBounce(player: Player, advance: int, currentPosition: int, newIndex: int, moves: int): void
+  }
 
-    Observable --> GameBoardObserver
-    EventManager --> PositionChangeEvent
-    EventManager --> CollisionEvent
-    EventManager --> OverflowEvent
-    EventManager --> OvershootEvent
-    EventManager --> UnderflowEvent
-    EventManager --> HomeEvent
-    GameBoard --> Observable
+  class HandleUnderflow {
+    -collisionDetector: IMovementHandler
+    -eventManager: EventManager
+    +HandleUnderflow(collisionDetector: IMovementHandler, eventManager: EventManager)
+    +movementHandler(player: Player, advance: int, originalIndex: int, newIndex: int, moves: int): void
+  }
 
- 
+%% Event Handling
+  class PositionChangeEvent {
+    -oldPosition: int
+    -newPosition: int
+    -advance: int
+    -moves: int
+    -totalMoves: int
+    -player: Player
+    +PositionChangeEvent(player: Player, moves: int, advance: int, oldPosition: int, newPosition: int)
+    +PositionChangeEvent(player: Player, moves: int, advance: int, oldPosition: int, newPosition: int, totalMoves: int)
+    +getOldPosition(): int
+    +getNewPosition(): int
+    +getAdvance(): int
+    +getMoves(): int
+    +getTotalMoves(): int
+    +getPlayer(): Player
+    +toString(): String
+  }
+
+  class CollisionEvent {
+    -hitPlayer: Player
+    -hitPlayerOldPosition: int
+    +CollisionEvent(player: Player, play: int, advance: int, oldPosition: int, newPosition: int, hitPlayer: Player, hitPlayerOldPosition: int)
+    +toString(): String
+  }
+
+  class OverflowEvent {
+    +OverflowEvent(player: Player, play: int, advance: int, oldPosition: int, newPosition: int)
+    +toString(): String
+  }
+
+  class HomeEvent {
+    +HomeEvent(player: Player, play: int, advance: int, oldPosition: int, newPosition: int, totalMoves: int)
+    +toString(): String
+  }
+
+  class OvershootEvent {
+    +OvershootEvent(player: Player, play: int, advance: int, oldPosition: int, newPosition: int)
+    +toString(): String
+  }
+
+  class UnderflowEvent {
+    +UnderflowEvent(player: Player, play: int, advance: int, oldPosition: int, newPosition: int)
+    +toString(): String
+  }
+
+  class EventManager {
+    -observers: List<GameBoardObserver>
+    +EventManager()
+    +add(observer: GameBoardObserver)
+    +detach(observer: GameBoardObserver)
+    +onOverflow(player: Player, advance: int, originalIndex: int, newIndex: int, moves: int)
+    +onUnderflow(player: Player, advance: int, originalIndex: int, newIndex: int, moves: int)
+    +onHomeEvent(player: Player, advance: int, currentPosition: int, candidateIndex: int, moves: int, totalMoves: int)
+    +onOvershoot(player: Player, advance: int, currentPosition: int, newIndex: int, moves: int)
+    +onCollision(player: Player, advance: int, currentPosition: int, candidateIndex: int, moves: int, hitPlayer: Player, hitPlayerOldPosition: int)
+    +notifyObservers(action: Consumer<GameBoardObserver>)
+  }
+
+  class Observable {
+    +onEvent(overflowEvent: OverflowEvent): void
+    +onEvent(underflowEvent: UnderflowEvent): void
+    +onEvent(homeEvent: HomeEvent): void
+    +onEvent(onOvershootEvent: OvershootEvent): void
+    +onEvent(onCollisionEvent: CollisionEvent): void
+  }
+
+  class GameBoardObserver {
+    +onEvent(overflowEvent: OverflowEvent): void
+    +onEvent(underflowEvent: UnderflowEvent): void
+    +onEvent(homeEvent: HomeEvent): void
+    +onEvent(onOvershootEvent: OvershootEvent): void
+    +onEvent(onCollisionEvent: CollisionEvent): void
+  }
+
+  Main --> GameConfiguration : creates
+  Main --> GameFacade : creates
+
+  GameFacade --> IFacade : uses
+  GameFacade --> GameConfiguration : uses
+  GameFacade --> DiceShakerManager : creates
+  GameFacade --> PlayerManager : creates
+  GameFacade --> GameBoard : creates
+  GameFacade --> Commands : creates
+
+  DiceShakerManager --> IDiceShakerManager
+  DiceShakerManager --> RandomSingleDiceShaker : creates
+  DiceShakerManager --> RandomDoubleDiceShaker : creates
+  DiceShakerManager --> FixedDiceShaker : creates
+
+  RandomSingleDiceShaker --> DiceShaker : uses
+  RandomDoubleDiceShaker --> DiceShaker : uses
+  FixedDiceShaker --> DiceShaker : uses
+
+  PlayerManager --> PlayerFactory : creates
+  PlayerFactory --> Player : creates
+  PlayerManager --> Player : uses
+
+  GameBoard --> EventManager : creates
+  GameBoard --> HandleCollision : creates
+  GameBoard --> HandleOvershoot : creates
+  GameBoard --> HandleUnderflow : creates
+  GameBoard --> HandleOverflow : creates
+
+  GameBoard --> HandleCollision : uses
+  GameBoard --> HandleOvershoot : uses
+  GameBoard --> HandleUnderflow : uses
+  GameBoard --> HandleOverflow : uses
+
+  HandleCollision --> EventManager : uses
+  HandleOvershoot --> EventManager : uses
+  HandleUnderflow --> EventManager : uses
+  HandleOverflow --> EventManager : uses
+
+  EventManager --> Observable : creates
+  EventManager --> Observable : uses
+  Observable --> GameBoardObserver : uses
+
+  EventManager --> CollisionEvent : creates
+  EventManager --> HomeEvent : creates
+  EventManager --> OverflowEvent : creates
+  EventManager --> OvershootEvent : creates
+  EventManager --> UnderflowEvent : creates
+
+  CollisionEvent --> PositionChangeEvent : uses
+  HomeEvent --> PositionChangeEvent : uses
+  OverflowEvent --> PositionChangeEvent : uses
+  OvershootEvent --> PositionChangeEvent : uses
+  UnderflowEvent --> PositionChangeEvent : uses
+
+  Commands --> GameBoard : uses
+  Commands --> PlayerManager : uses
+  Commands --> DiceShaker : uses
+
+
 ```
 ## 📊 Game Outputs
 
 During gameplay, the following information is printed:
 - Current Player
+- Turns
 - Game.Dice value
 - Start and end position of the move
-- Player's running turn count
 - Undo prompt and confirmation if selected
-- Game winner and total turn count at end
-
----
-
-## 📌 Home Positions by Game.Board Type
-
-### 🟩 Basic Game.Board (18 Game.com.simpleFrustration.Main Positions, 3 Tail)
-- Red: 1
-- Blue: 10
-- Green: 5
-- Yellow: 14
-
-### 🟥 Large Game.Board (36 Game.com.simpleFrustration.Main Positions, 6 Tail)
-- Red: 1
-- Blue: 19
-- Green: 10
-- Yellow: 28
-
-These are dynamically assigned based on board size and number of players.
-
+- Game winner, turns the player took and total turn count at end
 ---
 
 ## 📈 Sample Output (Console)
 
 ```text
-Red rolled a 6: Moved from 1 to 7
-Red has taken 1 turns.
+Red play 5 rolls 2
+Red moves from HOME Position 1 to Position 3
 Do you want to undo your move? (yes/no)
-...
-Yellow rolled a 2: Moved from 28 to 30
-...
-🏆 Game Over! Red wins!
-Total turns taken by all players: 42
+
+Blue play 5 rolls 2
+Blue moves from Position 28 to Position 30
+Do you want to undo your move? (yes/no)
+
+Green Wraps around the board
+Green play 5 rolls 12
+Green moves from Position 25 to Position 1
+Do you want to undo your move? (yes/no)
+
+Yellow play 5 rolls 3
+Yellow moves from TAIL Position 3 to END
+Yellow wins in 5 moves
+Total plays 20
+````

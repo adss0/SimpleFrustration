@@ -47,7 +47,6 @@ public class EventManager {
     public void onCollision(Player player, int advance, int currentPosition, int candidateIndex, int moves, Player hitPlayer, int hitPlayerOldPosition) {
         CollisionEvent event = new CollisionEvent(player, moves, advance, currentPosition, candidateIndex, hitPlayer, hitPlayerOldPosition );
         notifyObservers(observer -> observer.onEvent(event));
-
     }
 
     private void notifyObservers(Consumer<GameBoardObserver> action) {
