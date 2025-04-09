@@ -7,11 +7,14 @@ This project is a simulation of the **Simple Frustration** board game, implement
 ---
 
 ## 📚 Table of Contents
-1. [Key Classes & Responsibilities](#key-classes--responsibilities)
-2. [Program Execution Flow](#program-execution-flow)
-3. [Advanced Features & Variations](#advanced-features--variations)
-4. [Design Patterns](#design-patterns)
-5. [UML Diagrams](#uml-diagrams)
+1. [Features & Variations](#-features--variations)
+2. [Key Classes & Responsibilities](#-key-classes--responsibilities)
+3. [Program Execution Flow](#-program-execution-flow)
+4. [Design Patterns Used](#-design-patterns-used)
+5. [Project Structure](#project-structure)
+6. [UML Diagram](#uml-diagram)
+7. [Game Outputs](#-game-outputs)
+8. [Sample Output (Console)](#-sample-output-console)
 
 ---
 
