@@ -21,7 +21,7 @@ This project is a simulation of the **Simple Frustration** board game, implement
 ## 🚀 Features & Variations
 
 ### Key Features:
-- **Undo Move**: Players can undo their last move and retry their turn if needed. This feature helps test different strategies and correct mistakes.
+- **Undo Move**: Players can undo their last move and retry their turn if needed.
 - **Four Players Support**: Up to four players (Red, Blue, Green, Yellow) are supported, with automatic home and end positions based on the board size.
 - **Dice Options**: The game supports both single and double dice rolls for varying gameplay dynamics.
 
