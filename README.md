@@ -15,6 +15,7 @@ This project is a simulation of the **Simple Frustration** board game, implement
 6. [UML Diagram](#uml-diagram)
 7. [Game Outputs](#-game-outputs)
 8. [Sample Output (Console)](#-sample-output-console)
+9. [Sample Undo Moves (Console)](#-sample-undo-moves-console)
 
 ---
 
@@ -533,3 +534,25 @@ Yellow moves from TAIL Position 3 to END
 Yellow wins in 5 moves
 Total plays 20
 ````
+
+## 🔄 Sample Undo Moves (Console)
+
+```text
+Red play 1 rolls 12
+Red moves from HOME Position 1 to Position 13
+Do you want to undo your move? (yes/no)
+yes
+Red's move has been undone.
+Red play 1 rolls 5
+Red moves from HOME Position 1 to Position 6
+Do you want to undo your move? (yes/no)
+
+Blue play 1 rolls 2
+Blue moves from HOME Position 10 to Position 12
+Do you want to undo your move? (yes/no)
+yes
+Blue's move has been undone.
+Blue play 1 rolls 12
+Blue moves from HOME Position 10 to Position 22
+Do you want to undo your move? (yes/no)
+```
