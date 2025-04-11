@@ -12,8 +12,8 @@ public class GameConfiguration {
     public GameConfiguration(Scanner scanner) {  // Take scanner as parameter
 
         this.numberOfDice = getInput(scanner, "How many dice do you want to play with? ", 1, 2, 0);
-        this.numberOfPlayers = getInput(scanner, "Select number of players: ", 2, 4, 4);
-        this.boardSize = getInput(scanner, "Select Game.Board size: ", 18, 36, 36);
+        this.numberOfPlayers = getInput(scanner, "Select number of players: ", 2, 4, 2);
+        this.boardSize = getInput(scanner, "Select Game.Board size: ", 18, 36, 18);
         this.disableCollision = getInputBoolean(scanner, "Do you want to disable the Overshoot functionality? (true/false)", false);
         this.disableOvershoot = getInputBoolean(scanner, "Do you want to disable the bounce functionality? (true/false):", false);
     }

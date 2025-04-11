@@ -16,7 +16,8 @@ This project is a simulation of the **Simple Frustration** board game, implement
 7. [Game Outputs](#-game-outputs)
 8. [Sample Output (Console)](#-sample-output-console)
 9. [Sample Undo Moves (Console)](#-sample-undo-moves-console)
-
+10. [Setup Instructions & Project Requirements](#-setup-instructions--project-requirements)
+11. [License](#-license)
 ---
 
 ## 🚀 Features & Variations
@@ -41,7 +42,7 @@ This project is a simulation of the **Simple Frustration** board game, implement
 |----------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `Main.java`                | The entry point of the application. This class sets up the board and starts the game.                                                                                       |
 | `GameFacade.java`          | Manages the initialization of all required classes based on the selected game variations and settings.                                                                      |
-| `GameConfiguration.java`   | Prompts the player to select game settings, including board and player variations, as well as the modes.                                                                    |
+| `GameConfiguration.java`   | Includes the game settings, including board and player variations, as well as the modes.                                                                                    |
 | `Player.java`              | Represents a player, including their position on the board, color, and status.                                                                                              |
 | `GameBoard.java`           | Contains the core game logic, such as managing the board state, player positions, win conditions, and handling player movements, including undo functionality.              |
 | `PlayerManager.java`       | Handles the creation of players using the `PlayerFactory`, initializing them based on board size and count, and stores them in an array list.                               |
@@ -124,6 +125,7 @@ By following this flow, the game ensures smooth execution, correct handling of v
 ### **Command Pattern**
 - **Class**: `Commands.java`
 - **Explanation**: The Command Pattern encapsulates actions (like player movements) as objects. It decouples the invoker from the action, allowing for flexible execution and undoing.
+
 
 ## Project Structure
 ````
@@ -556,3 +558,26 @@ Blue play 1 rolls 12
 Blue moves from HOME Position 10 to Position 22
 Do you want to undo your move? (yes/no)
 ```
+
+## ⚙️ Setup Instructions & Project Requirements
+
+To run this project locally, make sure your development environment is properly configured.
+
+### ✅ Requirements
+
+- **Java Development Kit (JDK)**: Version 17 or later
+- **IDE**: IntelliJ IDEA (recommended) or any Java-compatible IDE
+- **Build Tool**: None required (basic project), or [Gradle/Maven] if your project uses dependencies
+- **Git**: To clone the repository (optional, if pulling from version control)
+
+### 🚀 Running the Program
+- **Clone the repository** (if using Git):
+  ```bash
+  git clone https://github.com/adss0/SimpleFrustration
+  ```
+- Open the project in IntelliJ IDEA or your preferred IDE.
+- Locate the Main class, right-click and choose Run 'Main'.
+
+## 📝 License
+
+This project is licensed under the MIT License.

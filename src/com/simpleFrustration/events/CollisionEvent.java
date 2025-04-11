@@ -15,7 +15,7 @@ public class CollisionEvent extends PositionChangeEvent {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(super.toString()).append("\n");
-        sb.append(String.format("%s Position %d hit! %s moves from Position %d to HOME (Position %d)",
+        sb.append(String.format("%s Position %d hit!\n%s moves from Position %d to HOME (Position %d)",
                 hitPlayer, hitPlayerOldPosition,
                 hitPlayer, hitPlayerOldPosition,
                 hitPlayer.getHOME()));
