@@ -16,7 +16,7 @@ This project is a simulation of the **Simple Frustration** board game, implement
 7. [Game Outputs](#-game-outputs)
 8. [Sample Output (Console)](#-sample-output-console)
 9. [Sample Undo Moves (Console)](#-sample-undo-moves-console)
-10. [Setup Instructions & Project Requirements](#-setup-instructions--project-requirements)
+10. [Setup Instructions & Project Requirements](#-setup-instructions--project-requirements) 
 11. [License](#-license)
 ---
 
