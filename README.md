@@ -1,4 +1,6 @@
-# Simple Frustration
+# Simple Frustration 🎲
+
+**A console version of the Simple Frustration board game in Java, built to show off design patterns. Two to four players race around an 18- or 36-square board with one or two dice, knock each other back home, bounce off the end and can undo a move. Behind it sit the Facade, Factory, Strategy, Command and Observer patterns.**
 
 ## 📌 Overview
 
@@ -47,7 +49,7 @@ This project is a simulation of the **Simple Frustration** board game, implement
 | `GameBoard.java`           | Contains the core game logic, such as managing the board state, player positions, win conditions, and handling player movements, including undo functionality.              |
 | `PlayerManager.java`       | Handles the creation of players using the `PlayerFactory`, initializing them based on board size and count, and stores them in an array list.                               |
 | `PlayerFactory.java`       | Implements the **Factory Pattern** to create player objects with specific configurations.                                                                                   |
-| `DiceShakManager.java`     | Provides the correct `DiceShaker` interface instance depending on the selected game settings using the **Strategy pattern**.                                                |
+| `DiceShakerManager.java`   | Provides the correct `DiceShaker` interface instance depending on the selected game settings using the **Strategy pattern**.                                                |
 | `Commands.java`            | Executes player movements, including advancing positions and undoing moves implementing the `Command Pattern`.                                                              |
 | `PositionChangeEvent.java` | Parent Class that displays updates regarding a player's position, such as home, tail, or end positions.                                                                     |
 | `Observable.java`          | Implements the **Observer Pattern** by utilizing the `GameBoardObserver` interface to notify observers of game state changes.                                               |
@@ -135,8 +137,7 @@ src/
         ├── board/  # Contains logic related to the game board
         │   ├── Commands.java    # Game commands for the board
         │   ├── GameBoard.java   # Main game board logic
-        │   ├── ICommands.java   # Interface for game commands
-        │   └── IGameBoard.java  # Interface for game board functionality
+        │   └── ICommands.java   # Interface for game commands
         ├── config/  # Game settings configuration
         │   └── GameConfiguration.java   # Setup and configuration for the game
         ├── dice/  # Dice logic and dice selection
@@ -565,9 +566,9 @@ To run this project locally, make sure your development environment is properly 
 
 ### ✅ Requirements
 
-- **Java Development Kit (JDK)**: Version 17 or later
+- **Java Development Kit (JDK)**: Version **21**. `Main.java` uses Java 21's *unnamed classes* preview feature, so preview features must be turned on (the IntelliJ project is already set to *21 (Preview)*).
 - **IDE**: IntelliJ IDEA (recommended) or any Java-compatible IDE
-- **Build Tool**: None required (basic project), or [Gradle/Maven] if your project uses dependencies
+- **Build Tool**: None required, as there are no external libraries
 - **Git**: To clone the repository (optional, if pulling from version control)
 
 ### 🚀 Running the Program
@@ -577,6 +578,20 @@ To run this project locally, make sure your development environment is properly 
   ```
 - Open the project in IntelliJ IDEA or your preferred IDE.
 - Locate the Main class, right-click and choose Run 'Main'.
+
+#### Or run it from a terminal (JDK 21)
+
+From the project folder:
+
+```bash
+javac --release 21 --enable-preview -d out $(find src -name "*.java")
+```
+
+```bash
+java --enable-preview -cp out Main
+```
+
+The game then asks for the number of dice, the number of players, the board size and which rules to turn off. Press **Enter** to accept a default. For the dice, the default of `0` uses a fixed, repeatable sequence of rolls, which is handy for testing; choose `1` or `2` for random dice.
 
 ## 📝 License
 
